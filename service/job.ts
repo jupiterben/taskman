@@ -1,8 +1,7 @@
-const celery = require('celery-node');
-const schedule = require('node-schedule');
-const config = require('./config')
 
-class SchedulerJob {
+import * as celery from 'celery-node';
+
+export class SchedulerJob {
     async createTask(client, taskId) {
         const task = client.createTask("tasks.createAnimFile");
         const result = task.applyAsync([taskId]);
@@ -15,8 +14,8 @@ class SchedulerJob {
         console.log(data2);
     }
 
-    async run() {
-        const client = celery.createClient(config.broker, config.backend);
+    async run(broker:string, backend:string) {
+        const client = celery.createClient(broker, backend);
         const taskList = [];
         for (let i = 1; i <= 10; i++) {
             taskList.push(this.createTask(client, i));
@@ -29,6 +28,4 @@ class SchedulerJob {
         client.disconnect();
     }
 }
-const job = new SchedulerJob();
 
-module.exports = job

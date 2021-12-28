@@ -7,19 +7,46 @@
     "doc": "doc"
   },
   "dependencies": {
-    "@types/amqplib": "^0.8.2",
+    "@ant-design/aliyun-theme": "0.0.4",
+    "ahooks": "^3.1.2",
     "amqplib": "^0.8.0",
+    "antd": "^4.18.0",
     "celery-node": "^0.5.8",
     "express": "^4.17.2",
-    "node-celery": "^0.2.8",
-    "node-schedule": "^2.1.0",
-    "uuid": "^8.3.2"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.0",
+    "serve": "^13.0.2",
+    "typescript": "^4.5.4",
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/amqplib": "^0.8.2",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.17",
+    "@types/node-fetch": "^3.0.3",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "craco": "0.0.3",
+    "craco-less": "^2.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "scripts": {
-    "test": "curl http://localhost:8081/runJob",
-    "worker": "node worker.js",
-    "start": "node server.js"
+    "dev": "npx craco start",
+    "build": "npx craco build",
+    "worker": "npx ts-node service/worker.ts",
+    "server": "npx ts-node service/server.ts"
   },
   "repository": {
     "type": "git",
@@ -30,5 +57,17 @@
   "bugs": {
     "url": "https://github.com/jupiterben/taskman/issues"
   },
-  "homepage": "https://github.com/jupiterben/taskman#readme"
+  "homepage": "https://github.com/",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
