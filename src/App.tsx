@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import './App.less';
-import { WorkStatusView } from './workerStatus'
+import { WorkerStatusView } from './workerStatus'
 
 const App: FC = () => (
   <div className="App">
-    <WorkStatusView/>
+    <WorkerStatusView/>
   </div>
 );
 

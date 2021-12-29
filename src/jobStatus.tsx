@@ -1,19 +1,17 @@
-
 import React, { useState } from 'react';
 import { Button, List, Card } from 'antd';
 import { useInterval } from 'ahooks';
 
 
 export function WorkerStatusView() {
-    const [workStatus, setWorkStatus] = useState([]);
+    const [jobStatus, setJobStatus] = useState([]);
 
     useInterval(async () => {
         try {
-            const res = await fetch('http://localhost/workerStatus', { method: 'GET', mode: 'cors' });
+            const res = await fetch('http://localhost/jobStatus', { method: 'GET', mode: 'cors' });
             const result = await res.json();
-            if(JSON.stringify(result) !== JSON.stringify(workStatus))
-            {
-                setWorkStatus(result);
+            if (JSON.stringify(result) !== JSON.stringify(jobStatus)) {
+                setJobStatus(result);
             }
         }
         catch (e) {
@@ -22,11 +20,11 @@ export function WorkerStatusView() {
     }, 500);
 
     return (
-        <List grid ={{gutter:16, column:4}} 
-            dataSource={workStatus} 
+        <List itemLayout="horizontal"
+            dataSource={jobStatus}
             renderItem={item => (
                 <List.Item>
-                    <Card title={item.workerId}>{item.status}</Card>
+
                 </List.Item>
             )}
         />

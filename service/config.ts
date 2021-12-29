@@ -7,7 +7,12 @@ export const config =
 
 export const workerConfig = 
 {
-    offlineTimeout: 5000,
-    heartbeat: 2000,
+    offlineTimeout: 60000,  //1min
+    heartbeat: 5000,    //5s
     stateReportChannel: "worker_state_report_channel"
+}
+
+export const P4Settings = 
+{
+    
 }

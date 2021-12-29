@@ -30,13 +30,14 @@ export class DirectMessageSender extends DirectMQBase {
 
 /// <summary>
 export class DirectMessageReceiver extends DirectMQBase {
-    async run(broker: string, queueName: string, callback: (string) => void) {
+    async run(broker: string, queueName: string, callback: (msg: string, time: any) => void) {
         try {
             await this.open(broker, queueName);
             this.ch.consume(this.queue, (cmsg: ampqlib.ConsumeMessage) => {
+                const time = cmsg.properties.timestamp;
                 const msg = cmsg.content.toString();
                 console.log("Received %s", msg);
-                callback && callback(msg)
+                callback && callback(msg, time)
             }, { noAck: true });
         }
         catch (e) {

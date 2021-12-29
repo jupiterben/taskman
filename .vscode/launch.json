@@ -20,11 +20,26 @@
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
+            "name": "Debug Client",
             "type": "pwa-chrome",
-            "request": "launch",
-            "name": "Chrome localhost",
+            "request": "launch",  
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/src"
+        },
+        {
+            "name": "Debug Server",
+            "type": "node",
+            "request": "launch",
+            "args": [
+                "service/server.ts"
+            ],
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
