@@ -1,7 +1,6 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
-import React = require('react');
 
 export function WorkStatusView() {
     const [workStatus, setWorkStatus] = useState(null);

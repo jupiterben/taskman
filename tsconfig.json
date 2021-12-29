@@ -14,10 +14,11 @@
             "./node_modules/@types"
         ],
         "declaration": true,
+        "sourceMap": true,
         "module": "CommonJS"
     },
     "include": [
         "service/**/*.ts",
         "src/**/*.ts"
-, "src/workerStatus.tsx"    ]
+    ]
 }

@@ -3,6 +3,7 @@ import * as express from 'express';
 import { SchedulerJob } from './job';
 import { config, workerConfig } from './config';
 import { WorkerStatusService } from './workerStatus';
+import { AddressInfo } from 'net';
 
 var app = express();
 var workerStatus = new WorkerStatusService();
@@ -21,6 +22,6 @@ app.get('/workerStatus', async function (req, res) {
 });
 
 var server = app.listen(80, function () {
-    var addr = server.address();
-    console.log(`应用实例，访问地址为 ${addr}`);
+    var addr = server.address() as AddressInfo;
+    console.log(`应用实例，访问地址为 ${addr.family}${addr.address}:${addr.port}`);
 });
