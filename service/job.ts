@@ -1,5 +1,6 @@
 
 import * as celery from 'celery-node';
+import { JobStatus, TaskInfo } from './def';
 
 export class SchedulerJob {
     isRunning = false;

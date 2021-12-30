@@ -1,5 +1,6 @@
 import { DirectMessageReceiver } from './direct';
 import { workerConfig } from './config';
+import { WorkerSendStatus } from './def';
 
 interface WorkStatusData {
     workerId: String;

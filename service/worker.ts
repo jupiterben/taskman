@@ -3,6 +3,7 @@ import * as celery from 'celery-node';
 import { config, workerConfig } from './config';
 import * as uuid from 'uuid';
 import { DirectMessageSender } from './direct';
+import { TaskInfo, WorkerSendStatus } from './def';
 
 const worker = celery.createWorker(config.broker, config.backend);
 const workerId = uuid.v1();
@@ -28,18 +29,18 @@ function updateStatusAndSend(s: string, c: string = "") {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-async function createAnimFile(taskId, maxFile) {
+async function createAnimFile(taskId, taskInfo:TaskInfo) {
     updateStatusAndSend("Working", "tasks.createAnimFile");
     await sleep(30000);
     updateStatusAndSend("Idle");
-    return `worker: ${workerId} task:${taskId} 创建AnimFile成功`
+    return `worker: ${workerId} task:${taskInfo.maxFile} 创建AnimFile成功`
 }
 
-async function checkAnimFile(taskId, maxFile) {
+async function checkAnimFile(taskId, taskInfo:TaskInfo) {
     updateStatusAndSend("Working", "tasks.checkAnimFile");
     await sleep(60000);
     updateStatusAndSend("Idle");
-    return `worker: ${workerId} task:${taskId} 动画文件通过检查`
+    return `worker: ${workerId} task:${taskInfo.maxFile} 动画文件通过检查`
 }
 
 worker.register("tasks.createAnimFile", createAnimFile);
