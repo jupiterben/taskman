@@ -12,7 +12,6 @@
     "ahooks": "^3.1.2",
     "amqplib": "^0.8.0",
     "antd": "^4.18.0",
-    "celery-node": "^0.5.8",
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "p4api": "^3.4.0",
@@ -36,6 +35,7 @@
     "@types/react-dom": "^17.0.11",
     "craco": "0.0.3",
     "craco-less": "^2.0.0",
+    "npm-run-all": "^4.1.5",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
@@ -48,7 +48,9 @@
   "scripts": {
     "dev": "npx craco start",
     "build": "npx craco build",
-    "worker": "npx ts-node service/worker.ts",
+    "worker": "npm-run-all --parallel worker-create worker-check",
+    "worker-create": "npx ts-node service/worker-create.ts",
+    "worker-check": "npx ts-node service/worker-check.ts",
     "server": "npx ts-node service/server.ts"
   },
   "repository": {

@@ -1,59 +1,101 @@
 
-import * as celery from 'celery-node';
 import { config, workerConfig } from './config';
 import * as uuid from 'uuid';
-import { DirectMessageSender } from './direct';
-import { TaskInfo, WorkerSendStatus } from './def';
+import { DirectMessageSender } from './mq/direct';
+import { TaskPayload, TaskStatusData, WorkerStatus } from './def';
+import { TaskMessageReceiver } from './mq/taskqueue';
 
-const worker = celery.createWorker(config.broker, config.backend);
-const workerId = uuid.v1();
-const statusMsgSender = new DirectMessageSender();
-statusMsgSender.open(config.broker, workerConfig.stateReportChannel);
+type TaskHandler = (...args) => AsyncIterableIterator<TaskStatusData>;
+export class Worker {
+    id: String;
+    statusReporter: DirectMessageSender;
+    status: String = "idle";
+    statusContent: String = "";
+    heartBeatTimer;
+    //task
+    taskReceiver: TaskMessageReceiver;
+    taskResultSender: DirectMessageSender;
+    activeTasks: Set<Promise<any>> = new Set();
+    taskHandlers: Map<String, TaskHandler> = new Map();
 
-let status: String = "Idle";
-let content: String = "";
-function sendStatus() {
-    const send: WorkerSendStatus = {
-        workerId,
-        status,
-        content,
-    };
-    statusMsgSender.send(JSON.stringify(send));
+    async start() {
+        this.statusReporter = new DirectMessageSender();
+        this.taskResultSender = new DirectMessageSender();
+        await this.taskResultSender.open(config.backend, config.TASK_RESULT_QUEUE);
+        await this.statusReporter.open(config.backend, config.WORKER_STATE_REPORT_QUEUE);
+        this.heartBeatTimer = setInterval(this.reportStatus.bind(this), workerConfig.heartbeatInterval);
+        process.once('SIGINT', this.stop.bind(this));
+
+        this.taskReceiver = new TaskMessageReceiver();
+        await this.taskReceiver.run(config.broker, config.TASK_QUEUE, this.handleTaskMessage.bind(this));
+        console.log(`worker ${this.id} is running...`);
+    }
+
+    handleTaskMessage(msg: string): boolean {
+        const payload: TaskPayload = JSON.parse(msg);
+        const taskName = payload.task;
+        if (!this.taskHandlers.has(taskName)) {
+            return false;
+        }
+
+        const runHandler = async (handler: TaskHandler, args: any[]) => {
+            for await (const status of handler(...args)) {
+                this.taskResultSender.send(JSON.stringify({
+                    taskId: payload.taskId,
+                    status: status.state,
+                    data: status.data
+                }));
+            }
+        };
+
+        const handler = this.taskHandlers.get(taskName);
+        const args = payload.args || [];
+        const taskPromise = runHandler(handler, args).finally(() => {
+            this.activeTasks.delete(taskPromise);
+        });
+        // record the executing task
+        this.activeTasks.add(taskPromise);
+        return true;
+    }
+
+    public register(taskName: string, handler: TaskHandler) {
+        if (this.taskHandlers.has(taskName)) {
+            throw new Error(`task ${taskName} already registered`);
+        }
+        this.taskHandlers.set(taskName, handler);
+    }
+
+    async stop() {
+        console.log(`worker ${this.id} is stopping...`);
+        this.updateStatus("dead", "");
+        this.heartBeatTimer && clearInterval(this.heartBeatTimer);
+        this.heartBeatTimer = null;
+        await this.taskReceiver?.close();
+        this.taskReceiver = null;
+        await this.taskResultSender?.close();
+        this.taskResultSender = null;
+        await this.statusReporter?.close();
+        this.statusReporter = null;
+        console.log(`worker ${this.id} is stopped`);
+    }
+
+    constructor() {
+        this.id = uuid.v4();
+    }
+
+    updateStatus(status: String, content: String) {
+        this.status = status;
+        this.statusContent = content;
+        this.reportStatus();
+    }
+
+    reportStatus() {
+        const send: WorkerStatus = {
+            workerId: this.id,
+            status: this.status,
+            content: this.statusContent
+        };
+        this.statusReporter.send(JSON.stringify(send));
+    }
 }
-function updateStatusAndSend(s: string, c: string = "") {
-    status = s;
-    content = c;
-    sendStatus();
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-async function createAnimFile(taskId, taskInfo:TaskInfo) {
-    updateStatusAndSend("Working", "tasks.createAnimFile");
-    await sleep(30000);
-    updateStatusAndSend("Idle");
-    return `worker: ${workerId} task:${taskInfo.maxFile} 创建AnimFile成功`
-}
-
-async function checkAnimFile(taskId, taskInfo:TaskInfo) {
-    updateStatusAndSend("Working", "tasks.checkAnimFile");
-    await sleep(60000);
-    updateStatusAndSend("Idle");
-    return `worker: ${workerId} task:${taskInfo.maxFile} 动画文件通过检查`
-}
-
-worker.register("tasks.createAnimFile", createAnimFile);
-worker.register("tasks.checkAnimFile", checkAnimFile);
-
-worker.start();
-console.log(`${workerId} is Running...`)
-
-const heartBeat = setInterval(sendStatus, workerConfig.heartbeat);
-
-process.once('SIGINT', async function () {
-    clearInterval(heartBeat);
-    updateStatusAndSend('dead');
-    await statusMsgSender.close();
-});
 

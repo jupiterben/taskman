@@ -1,13 +1,13 @@
-import { DirectMessageReceiver } from './direct';
+import { DirectMessageReceiver } from './mq/direct';
 import { workerConfig } from './config';
-import { WorkerSendStatus } from './def';
+import { WorkerStatus } from './def';
 
 interface WorkStatusData {
     workerId: String;
     status: String;
     updateTime: Date;
 }
-export class WorkerStatusService {
+export class WorkerAminService {
     private status: Map<String, WorkStatusData> = new Map<String, WorkStatusData>();
     private timeout = workerConfig.offlineTimeout;
     private msgReceiver: DirectMessageReceiver;
@@ -21,14 +21,14 @@ export class WorkerStatusService {
     }
 
     onMessage(msg: string): void {
-        const msgObj: WorkerSendStatus = JSON.parse(msg);
+        const msgObj: WorkerStatus = JSON.parse(msg);
         const workerId = msgObj.workerId;
         const status = msgObj.status;
         const updateTime = new Date();
         this.status.set(workerId, { workerId, status, updateTime });
     }
 
-    getStatus(): Array<WorkStatusData>{
+    getStatus(): Array<WorkStatusData> {
         const invalidWorkerIds = [];
         this.status.forEach((value, key) => {
             const now = new Date();

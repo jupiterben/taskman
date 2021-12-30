@@ -1,15 +1,25 @@
 
 import * as express from 'express';
-import { SchedulerJob } from './job';
-import { config, workerConfig } from './config';
-import { WorkerStatusService } from './workerStatus';
+import { config } from './config';
 import { AddressInfo } from 'net';
 import * as cors from 'cors';
+import { JobAdminService } from './jobScheduler';
+import { WorkerAminService } from './workerAdmin';
 
-var app = express();
-var workerStatus = new WorkerStatusService();
-workerStatus.start(config.broker, workerConfig.stateReportChannel);
-var job = new SchedulerJob();
+const app = express();
+const workerService = new WorkerAminService();
+const jobService = new JobAdminService();
+
+const server = app.listen(80, async function () {
+    console.log('Starting Job Scheduler Service...');
+    await jobService.start(config.broker, config.backend);
+
+    console.log("Starting Worker Status Service...");
+    await workerService.start(config.broker, config.WORKER_STATE_REPORT_QUEUE);
+
+    var addr = server.address() as AddressInfo;
+    console.log(`App is Running at ${addr.family}${addr.address}:${addr.port}`);
+});
 
 //静态网站
 app.use(express.static('build'));
@@ -17,30 +27,21 @@ app.use(cors());
 
 //处理请求
 app.get('/runJob', async function (req, res) {
-    if (job.isRunning) {
-        res.send('job is running');
-    } else {
-        job.run(config.broker, config.backend);
-        res.send('job is running');
-    }
+    await jobService.runJob();
+    res.send('job is running');
 });
 
 app.get('/jobStatus', async function (req, res) {
-    const status = job.getStatus();
+    const status = jobService.getStatus();
     res.json([status]);
 });
 
 app.get('/workerStatus', async function (req, res) {
-    const status = workerStatus.getStatus();
+    const status = workerService.getStatus();
     res.json(status);
 });
 
 //监听端口
-var server = app.listen(80, function () {
-    var addr = server.address() as AddressInfo;
-    console.log(`应用实例，访问地址为 ${addr.family}${addr.address}:${addr.port}`);
-});
-
 process.once('SIGINT', async function () {
-    await workerStatus.stop();
+    await workerService.stop();
 });
