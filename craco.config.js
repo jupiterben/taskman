@@ -1,6 +1,7 @@
 const CracoLessPlugin = require('craco-less');
 
 module.exports = {
+    devtool: "source-map",
     plugins: [
         {
             plugin: CracoLessPlugin,

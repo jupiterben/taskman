@@ -3,7 +3,7 @@ import { Button, List, Card } from 'antd';
 import { useInterval } from 'ahooks';
 import { Progress, Tag } from 'antd';
 import ProList from '@ant-design/pro-list';
-import { JobStatus } from '../service/def'
+import { JobStatus } from '../../service/def'
 
 const ListItemMeta =
 {
@@ -14,8 +14,6 @@ const ListItemMeta =
     content: {},
     actions: {},
 }
-
-
 
 
 export function JobStatusView() {
@@ -59,7 +57,6 @@ export function JobStatusView() {
                         }}
                     >
                         <div>{job.isRunning ? "Running" : "Stopped"}</div>
-                        <Progress percent={job.isRunning ? job.finishSubTasks / job.totalSubTasks : 0} />
                     </div>
                 </div>
             ),

@@ -20,6 +20,12 @@ const server = app.listen(80, async function () {
     var addr = server.address() as AddressInfo;
     console.log(`App is Running at ${addr.family}${addr.address}:${addr.port}`);
 });
+//监听端口
+process.once('SIGINT', async function () {
+    await workerService.stop();
+    await jobService.stop();
+});
+
 
 //静态网站
 app.use(express.static('build'));
@@ -41,7 +47,4 @@ app.get('/workerStatus', async function (req, res) {
     res.json(status);
 });
 
-//监听端口
-process.once('SIGINT', async function () {
-    await workerService.stop();
-});
+
