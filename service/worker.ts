@@ -7,16 +7,16 @@ import { TaskMessageReceiver } from './mq/taskqueue';
 
 type TaskHandler = (...args) => AsyncIterableIterator<TaskStatusData>;
 export class Worker {
-    id: String;
+    id: string;
     statusReporter: DirectMessageSender;
-    status: String = "idle";
-    statusContent: String = "";
+    status: string = "idle";
+    statusContent: string = "";
     heartBeatTimer;
     //task
     taskReceiver: TaskMessageReceiver;
     taskResultSender: DirectMessageSender;
     activeTasks: Set<Promise<any>> = new Set();
-    taskHandlers: Map<String, TaskHandler> = new Map();
+    taskHandlers: Map<string, TaskHandler> = new Map();
 
     async start() {
         this.statusReporter = new DirectMessageSender();
@@ -83,7 +83,7 @@ export class Worker {
         this.id = uuid.v4();
     }
 
-    updateStatus(status: String, content: String) {
+    updateStatus(status: string, content: string) {
         this.status = status;
         this.statusContent = content;
         this.reportStatus();

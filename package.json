@@ -7,20 +7,18 @@
     "doc": "doc"
   },
   "dependencies": {
-    "@ant-design/aliyun-theme": "0.0.4",
-    "@ant-design/pro-list": "^1.21.12",
-    "ahooks": "^3.1.2",
     "amqplib": "^0.8.0",
-    "antd": "^4.18.0",
     "cors": "^2.8.5",
     "devextreme": "21.2",
     "devextreme-react": "21.2",
     "express": "^4.17.2",
     "p4api": "^3.3.0",
     "react": "^17.0.2",
+    "react-app-polyfill": "^1.0.0",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "5.0.0",
-    "serve": "^13.0.2",
+    "sass": "^1.34.1",
     "typescript": "^4.5.4",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.2"
@@ -37,6 +35,8 @@
     "@types/react-dom": "^17.0.11",
     "craco": "0.0.3",
     "craco-less": "^2.0.0",
+    "devextreme-cli": "1.2.24",
+    "devextreme-themebuilder": "^21.2.4",
     "npm-run-all": "^4.1.5",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
@@ -48,12 +48,15 @@
     ]
   },
   "scripts": {
-    "dev": "npx craco start",
-    "build": "npx craco build",
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "build-themes": "devextreme build",
     "worker": "npm-run-all --parallel worker-create worker-check",
     "worker-create": "npx ts-node service/worker-create.ts",
     "worker-check": "npx ts-node service/worker-check.ts",
-    "server": "npx ts-node service/server.ts"
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "npm run build && npx ts-node service/server.ts"
   },
   "repository": {
     "type": "git",

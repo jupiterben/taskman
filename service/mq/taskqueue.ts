@@ -21,7 +21,7 @@ class TaskMQBase {
 }
 
 export class TaskMessageSender extends TaskMQBase {
-    send(msg: String): boolean {
+    send(msg: string): boolean {
         const { ch, queue } = this;
         if (!ch || !queue) return false;
         let ret = ch.sendToQueue(queue, Buffer.from(msg), { deliveryMode: true });

@@ -1,6 +1,6 @@
 
 import { config } from './config';
-import { CreateAnimFileTaskParam, JobStatus, TaskPayload, TaskState, TaskStatusData } from './def';
+import { CreateAnimFileTaskParam, JobStatus, TaskPayload, TaskState, TaskStatus, TaskStatusData } from './def';
 import { TaskMessageSender } from './mq/taskqueue';
 import * as uuid from 'uuid';
 import { DirectMessageReceiver } from './mq/direct';
@@ -23,6 +23,12 @@ export class Task {
             task: this.taskName,
             args: this.param
         };
+    }
+    getTaskStatus(): TaskStatus {
+        return {
+            taskId: this.id,
+            statusData: this.status
+        }
     }
 }
 
@@ -74,13 +80,11 @@ export class JobAdminService extends TaskProducer {
     }
 
     getStatus(): JobStatus {
-        const finishTasks = Array.from(this.taskList.values()).filter(t => t.status.state === TaskState.Finish).length;
-        const totalTasks = this.taskList.size;
+        const taskList = Array.from(this.taskList.values()).map(task => task.getTaskStatus());
         return {
-            jobId: "AnimFile Job",
+            name: "AnimFile Job",
             isRunning: this.isRunning,
-            finishTasks,
-            totalTasks,
+            taskList
         };
     }
 }

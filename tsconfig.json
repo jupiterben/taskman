@@ -3,7 +3,7 @@
         "outDir": "./dist",
         "allowJs": true,
         "target": "es6",
-        "jsx":"react",
+        "jsx": "react",
         "lib": [
             "ES6",
             "DOM"
@@ -18,7 +18,7 @@
         "module": "CommonJS"
     },
     "include": [
-        "service/**/*.ts",
-        "src/**/*.ts"
+        "service/**/*",
+        "src/**/*",
     ]
 }

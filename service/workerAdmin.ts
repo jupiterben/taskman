@@ -3,12 +3,12 @@ import { workerConfig } from './config';
 import { WorkerStatus } from './def';
 
 interface WorkStatusData {
-    workerId: String;
-    status: String;
+    workerId: string;
+    status: string;
     updateTime: Date;
 }
 export class WorkerAminService {
-    private status: Map<String, WorkStatusData> = new Map<String, WorkStatusData>();
+    private status: Map<string, WorkStatusData> = new Map<string, WorkStatusData>();
     private timeout = workerConfig.offlineTimeout;
     private msgReceiver: DirectMessageReceiver;
 

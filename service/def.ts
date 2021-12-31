@@ -1,21 +1,26 @@
 
 export interface WorkerStatus {
-    workerId: String;
-    status: String;
-    content: String;
+    workerId: string;
+    status: string;
+    content: string;
 }
 
 export interface CreateAnimFileTaskParam {
-    maxFile: String;
-    submitter: String;
-    animFile: String;
+    maxFile: string;
+    submitter: string;
+    animFile: string;
+}
+
+export interface TaskStatus {
+    taskId: string;
+    statusData: TaskStatusData;
 }
 
 export interface JobStatus {
-    jobId: String;
+    //jobId: string;
+    name: string;
     isRunning: boolean;
-    totalTasks: number;
-    finishTasks: number;
+    taskList: TaskStatus[];
 }
 
 export interface TaskPayload {

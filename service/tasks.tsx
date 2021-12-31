@@ -15,10 +15,9 @@ const ListItemMeta =
     actions: {},
 }
 
-
 export function JobStatusView() {
-    const [state, setState] = useState({ data: [], listData: [] });
-
+    const [state, setState] = useState<{data:JobStatus, }>();
+    
     const refreshStatus = async () => {
         try {
             const res = await fetch('http://localhost/jobStatus', { method: 'GET', mode: 'cors' });
@@ -29,6 +28,8 @@ export function JobStatusView() {
             console.log(e);
         }
     };
+    //定时刷新状态
+    useInterval(refreshStatus, 500);
 
     async function StartJob() {
         const res = await fetch('http://localhost/runJob', { method: 'GET', mode: 'cors' });
@@ -38,7 +39,7 @@ export function JobStatusView() {
 
     function toListItemData(job: JobStatus) {
         return ({
-            title: job.jobId,
+            title: job.name,
             actions: [
                 <Button onClick={StartJob}>Start</Button>,
             ],
@@ -67,13 +68,12 @@ export function JobStatusView() {
         return { data, listData };
     }
 
-    //定时刷新状态
-    useInterval(refreshStatus, 500);
+   
 
     return (
         <ProList
             metas={ListItemMeta}
-            headerTitle="任务"
+            headerTitle={state.data.name}
             dataSource={state.listData}
         />
     );
