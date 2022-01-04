@@ -1,8 +1,11 @@
 {
   "name": "taskman",
   "version": "0.1.0",
-  "private": true,
-  "description": "An out-of-box UI solution for task managagement",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "doc": "doc"
+  },
   "scripts": {
     "worker": "npm-run-all --parallel worker-create worker-check",
     "worker-create": "npx ts-node service/worker-create.ts",
@@ -44,11 +47,18 @@
       "prettier --write"
     ]
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-descriptions": "^1.10.27",
@@ -115,9 +125,5 @@
     "swagger-ui-react": "^3.52.0",
     "types": "^0.1.1",
     "typescript": "^4.5.0"
-  },
-  "engines": {
-    "node": ">=10.0.0"
-  },
-  "type": "module"
+  }
 }
