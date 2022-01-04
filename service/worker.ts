@@ -1,20 +1,21 @@
 
-import { config, workerConfig } from './config';
+import { config } from './config';
 import * as uuid from 'uuid';
 import { DirectMessageSender } from './mq/direct';
-import { TaskPayload, TaskStatusData, WorkerStatus } from './def';
+import type { TaskPayload, TaskStatusData, WorkerStatus } from './def';
 import { TaskMessageReceiver } from './mq/taskqueue';
 
-type TaskHandler = (...args) => AsyncIterableIterator<TaskStatusData>;
+type TaskHandler = (...args: any) => AsyncIterableIterator<TaskStatusData>;
+
 export class Worker {
     id: string;
-    statusReporter: DirectMessageSender;
+    statusReporter?: DirectMessageSender;
     status: string = "idle";
     statusContent: string = "";
-    heartBeatTimer;
+    heartBeatTimer?: NodeJS.Timer;
     //task
-    taskReceiver: TaskMessageReceiver;
-    taskResultSender: DirectMessageSender;
+    taskReceiver?: TaskMessageReceiver;
+    taskResultSender?: DirectMessageSender;
     activeTasks: Set<Promise<any>> = new Set();
     taskHandlers: Map<string, TaskHandler> = new Map();
 
@@ -23,7 +24,7 @@ export class Worker {
         this.taskResultSender = new DirectMessageSender();
         await this.taskResultSender.open(config.backend, config.TASK_RESULT_QUEUE);
         await this.statusReporter.open(config.backend, config.WORKER_STATE_REPORT_QUEUE);
-        this.heartBeatTimer = setInterval(this.reportStatus.bind(this), workerConfig.heartbeatInterval);
+        this.heartBeatTimer = setInterval(this.reportStatus.bind(this), config.WORKER_HEARTBEAT_INTERVAL);
         process.once('SIGINT', this.stop.bind(this));
 
         this.taskReceiver = new TaskMessageReceiver();
@@ -40,7 +41,7 @@ export class Worker {
 
         const runHandler = async (handler: TaskHandler, args: any[]) => {
             for await (const status of handler(...args)) {
-                this.taskResultSender.send(JSON.stringify({
+                this.taskResultSender?.send(JSON.stringify({
                     taskId: payload.taskId,
                     status: status.state,
                     data: status.data
@@ -49,6 +50,7 @@ export class Worker {
         };
 
         const handler = this.taskHandlers.get(taskName);
+        if (!handler) return false;
         const args = payload.args || [];
         const taskPromise = runHandler(handler, args).finally(() => {
             this.activeTasks.delete(taskPromise);
@@ -68,14 +70,22 @@ export class Worker {
     async stop() {
         console.log(`worker ${this.id} is stopping...`);
         this.updateStatus("dead", "");
-        this.heartBeatTimer && clearInterval(this.heartBeatTimer);
-        this.heartBeatTimer = null;
-        await this.taskReceiver?.close();
-        this.taskReceiver = null;
-        await this.taskResultSender?.close();
-        this.taskResultSender = null;
-        await this.statusReporter?.close();
-        this.statusReporter = null;
+        if (this.heartBeatTimer) {
+            clearInterval(this.heartBeatTimer);
+            this.heartBeatTimer = undefined;
+        }
+        if (this.taskReceiver) {
+            await this.taskReceiver?.close();
+            this.taskReceiver = undefined;
+        }
+        if (this.taskResultSender) {
+            await this.taskResultSender.close();
+            this.taskResultSender = undefined;
+        }
+        if (this.statusReporter) {
+            await this.statusReporter?.close();
+            this.statusReporter = undefined;
+        }
         console.log(`worker ${this.id} is stopped`);
     }
 
@@ -95,7 +105,7 @@ export class Worker {
             status: this.status,
             content: this.statusContent
         };
-        this.statusReporter.send(JSON.stringify(send));
+        this.statusReporter?.send(JSON.stringify(send));
     }
 }
 

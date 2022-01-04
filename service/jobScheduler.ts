@@ -1,6 +1,6 @@
-
 import { config } from './config';
-import { CreateAnimFileTaskParam, JobStatus, TaskPayload, TaskState, TaskStatus, TaskStatusData } from './def';
+import type { CreateAnimFileTaskParam, JobStatus, TaskPayload, TaskStatus, TaskStatusData } from './def';
+import { TaskState } from './def';
 import { TaskMessageSender } from './mq/taskqueue';
 import * as uuid from 'uuid';
 import { DirectMessageReceiver } from './mq/direct';
@@ -33,8 +33,8 @@ export class Task {
 }
 
 export class TaskProducer {
-    taskSender: TaskMessageSender;
-    taskResultReceiver: DirectMessageReceiver;
+    taskSender?: TaskMessageSender;
+    taskResultReceiver?: DirectMessageReceiver;
     taskList: Map<string, Task> = new Map();
     async start(broker: string, backend: string) {
         this.taskSender = new TaskMessageSender();
@@ -44,11 +44,11 @@ export class TaskProducer {
     }
     async stop() {
         await this.taskSender?.close();
-        this.taskSender = null;
+        this.taskSender = undefined;
         await this.taskResultReceiver?.close();
-        this.taskResultReceiver = null;
+        this.taskResultReceiver = undefined;
     }
-    createTask(taskName: string, param: any[]): Task {
+    createTask(taskName: string, param: any[]): Task | null {
         if (this.taskSender) {
             const task = new Task(taskName, param);
             this.taskSender.send(JSON.stringify(task.getPayload()));
@@ -61,7 +61,7 @@ export class TaskProducer {
     }
 }
 
-export class JobAdminService extends TaskProducer {
+export class TaskScheduler extends TaskProducer {
     isRunning = false;
     async runJob() {
         this.isRunning = true;

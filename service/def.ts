@@ -1,4 +1,3 @@
-
 export interface WorkerStatus {
     workerId: string;
     status: string;

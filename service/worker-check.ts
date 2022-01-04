@@ -1,4 +1,5 @@
-import { CreateAnimFileTaskParam, TaskState } from './def';
+import type { CreateAnimFileTaskParam} from './def';
+import { TaskState } from './def';
 import { sleep } from './util';
 import { Worker } from './worker';
 

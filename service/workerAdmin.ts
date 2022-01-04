@@ -1,23 +1,23 @@
 import { DirectMessageReceiver } from './mq/direct';
-import { workerConfig } from './config';
-import { WorkerStatus } from './def';
+import { config } from './config';
+import type { WorkerStatus } from './def';
 
 interface WorkStatusData {
     workerId: string;
     status: string;
     updateTime: Date;
 }
-export class WorkerAminService {
+export class WorkerAdmin {
     private status: Map<string, WorkStatusData> = new Map<string, WorkStatusData>();
-    private timeout = workerConfig.offlineTimeout;
-    private msgReceiver: DirectMessageReceiver;
+    private timeout = config.WORKER_OFFLINE_TIMEOUT;
+    private msgReceiver?: DirectMessageReceiver;
 
     async start(broker: string, queueName: string) {
         this.msgReceiver = new DirectMessageReceiver();
         await this.msgReceiver.run(broker, queueName, this.onMessage.bind(this));
     }
     async stop() {
-        await this.msgReceiver.close();
+        await this.msgReceiver?.close();
     }
 
     onMessage(msg: string): void {
@@ -28,8 +28,8 @@ export class WorkerAminService {
         this.status.set(workerId, { workerId, status, updateTime });
     }
 
-    getStatus(): Array<WorkStatusData> {
-        const invalidWorkerIds = [];
+    getStatus(): WorkStatusData[] {
+        const invalidWorkerIds: string[] = [];
         this.status.forEach((value, key) => {
             const now = new Date();
             const diff = now.getTime() - value.updateTime.getTime();

@@ -1,9 +1,9 @@
 import * as ampqlib from 'amqplib';
 
 class BroadCastMQBase {
-    conn: ampqlib.Connection;
-    ch: ampqlib.Channel;
-    exchange: string;
+    conn?: ampqlib.Connection;
+    ch?: ampqlib.Channel;
+    exchange?: string;;
     async open(broker: string, exchangeName: string) {
         this.conn = await ampqlib.connect(broker);
         const ch = this.ch = await this.conn.createChannel();
@@ -18,7 +18,7 @@ class BroadCastMQBase {
 }
 
 export class BroadCastSender extends BroadCastMQBase {
-    send(msg): boolean {
+    send(msg: string): boolean {
         const { ch, exchange } = this;
         if (!ch || !exchange) return false;
         const ret = ch.publish(exchange, '', Buffer.from(msg));
@@ -34,10 +34,11 @@ export class BroadCastReceiver extends BroadCastMQBase {
             const assertQueue = await ch.assertQueue('', { exclusive: true });
             const queue = assertQueue.queue;
             await ch.bindQueue(queue, exchangeName, '');
-            await ch.consume(exchange, (msg: ampqlib.ConsumeMessage) => {
+            await ch.consume(exchange, (msg: ampqlib.ConsumeMessage | null) => {
+                if (!msg) return;
                 const content = msg.content.toString();
                 console.log("Received %s", msg);
-                callback && callback(content);
+                callback(content);
             }, { noAck: true });
         }
         catch (e) {

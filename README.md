@@ -1,6 +1,4 @@
 # taskman
-
-
 https://lxc1121.github.io/2016/05/celery-rabbitmq/
 https://www.perforce.com/manuals/p4vjs-ug/Content/P4VJS-UG/get-started.html
 https://github.com/amqp-node/amqplib/tree/main/examples/tutorials/callback_api
@@ -31,4 +29,6 @@ Celery
 https://jishuin.proginn.com/p/763bfbd62e06
 
 
+
+### 设计
 
