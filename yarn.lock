@@ -33,6 +33,18 @@
     classnames "^2.2.6"
     rc-util "^5.9.4"
 
+"@ant-design/pro-card@^1.18.21":
+  version "1.18.21"
+  resolved "https://registry.npmmirror.com/@ant-design/pro-card/download/@ant-design/pro-card-1.18.21.tgz#b8229e144c871d6bacb33171d90d0c69616daad2"
+  integrity sha512-XA9bc2DevewT9LnoIuBiD5Al6cGOXPBydlC5jfZa2sIHnCY0oniJnjt44gdRqJj5hHDoUS0IkRWbW8EyXaWZag==
+  dependencies:
+    "@ant-design/icons" "^4.2.1"
+    "@ant-design/pro-utils" "1.32.4"
+    "@babel/runtime" "^7.16.3"
+    classnames "^2.2.6"
+    omit.js "^2.0.2"
+    rc-util "^5.4.0"
+
 "@ant-design/pro-cli@^2.1.0":
   version "2.1.5"
   resolved "https://registry.nlark.com/@ant-design/pro-cli/download/@ant-design/pro-cli-2.1.5.tgz?cache=0&sync_timestamp=1627870579817&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40ant-design%2Fpro-cli%2Fdownload%2F%40ant-design%2Fpro-cli-2.1.5.tgz#7b4fd31a6dc1c553396afc7fb46b32019673032f"
@@ -148,6 +160,15 @@
     rc-util "^5.0.1"
     swr "1.1.0"
 
+"@ant-design/pro-provider@1.5.5":
+  version "1.5.5"
+  resolved "https://registry.npmmirror.com/@ant-design/pro-provider/download/@ant-design/pro-provider-1.5.5.tgz#14a592413b81d2cfbd6cdcfaedd92e50499929c6"
+  integrity sha512-gZzTG+WTNj6xswD/iLSLw8LH+7VNQKYuNcV5KmMqHrSlyimusMaJqBg+pMcD5PVLEe1pdm1lHm72t3qsRWtMNg==
+  dependencies:
+    "@babel/runtime" "^7.16.3"
+    rc-util "^5.0.1"
+    swr "1.1.0"
+
 "@ant-design/pro-skeleton@1.0.3":
   version "1.0.3"
   resolved "https://registry.npmmirror.com/@ant-design/pro-skeleton/download/@ant-design/pro-skeleton-1.0.3.tgz#7553d202acb5a879c838c7086f74d45098259271"
@@ -183,6 +204,20 @@
   dependencies:
     "@ant-design/icons" "^4.3.0"
     "@ant-design/pro-provider" "1.5.4"
+    "@babel/runtime" "^7.16.3"
+    classnames "^2.2.6"
+    moment "^2.27.0"
+    rc-util "^5.0.6"
+    react-sortable-hoc "^2.0.0"
+    swr "1.1.0"
+
+"@ant-design/pro-utils@1.32.4":
+  version "1.32.4"
+  resolved "https://registry.npmmirror.com/@ant-design/pro-utils/download/@ant-design/pro-utils-1.32.4.tgz#f3401d292f1416ca5de7228f81e89e6eb0e1d0c0"
+  integrity sha512-awsnW2hQi/zFxXLfTOYFR1JOes2Kfve8ls7gsXYTNj2qWWbT9QCad0RTw072aQvb/u0C2FhG1zqfIfP2/NWuow==
+  dependencies:
+    "@ant-design/icons" "^4.3.0"
+    "@ant-design/pro-provider" "1.5.5"
     "@babel/runtime" "^7.16.3"
     classnames "^2.2.6"
     moment "^2.27.0"
@@ -3370,6 +3405,24 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
+ahooks-v3-count@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/ahooks-v3-count/download/ahooks-v3-count-1.0.0.tgz#ddeb392e009ad6e748905b3cbf63a9fd8262ca80"
+  integrity sha512-V7uUvAwnimu6eh/PED4mCDjE7tokeZQLKlxg9lCTMPhN+NjsSbtdacByVlR1oluXQzD3MOw55wylDmQo4+S9ZQ==
+
+ahooks@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.npmmirror.com/ahooks/download/ahooks-3.1.4.tgz#5492c05ea6a0b12d03ea9217b313af6c8dc264f3"
+  integrity sha512-4d1ryu5Gw+fpMlGaZ9mE0KGRcjOoWItGRR8oGS7WvUx8n6oaTLiasHt+9BD/FU9r//cWxT/mL4JiP5CwT3ooag==
+  dependencies:
+    ahooks-v3-count "^1.0.0"
+    dayjs "^1.9.1"
+    intersection-observer "^0.12.0"
+    js-cookie "^3.0.0"
+    lodash "^4.17.21"
+    resize-observer-polyfill "^1.5.1"
+    screenfull "^5.0.0"
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.nlark.com/ajv-errors/download/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
@@ -5350,7 +5403,7 @@ date-format@^0.0.0:
   resolved "https://registry.npm.taobao.org/date-format/download/date-format-0.0.0.tgz#09206863ab070eb459acea5542cbd856b11966b3"
   integrity sha1-CSBoY6sHDrRZrOpVQsvYVrEZZrM=
 
-dayjs@1.x, dayjs@^1.10.3:
+dayjs@1.x, dayjs@^1.10.3, dayjs@^1.9.1:
   version "1.10.7"
   resolved "https://registry.npmmirror.com/dayjs/download/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
   integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
@@ -7960,6 +8013,11 @@ internal-slot@^1.0.3:
     has "^1.0.3"
     side-channel "^1.0.4"
 
+intersection-observer@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.nlark.com/intersection-observer/download/intersection-observer-0.12.0.tgz#6c84628f67ce8698e5f9ccf857d97718745837aa"
+  integrity sha1-bIRij2fOhpjl+cz4V9l3GHRYN6o=
+
 intl-format-cache@^4.2.21:
   version "4.3.1"
   resolved "https://registry.nlark.com/intl-format-cache/download/intl-format-cache-4.3.1.tgz#484d31a9872161e6c02139349b259a6229ade377"
@@ -9067,6 +9125,11 @@ jpeg-js@^0.4.2:
   version "0.4.3"
   resolved "https://registry.npm.taobao.org/jpeg-js/download/jpeg-js-0.4.3.tgz#6158e09f1983ad773813704be80680550eff977b"
   integrity sha1-YVjgnxmDrXc4E3BL6AaAVQ7/l3s=
+
+js-cookie@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/js-cookie/download/js-cookie-3.0.1.tgz#9e39b4c6c2f56563708d7d31f6f5f21873a92414"
+  integrity sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==
 
 js-file-download@^0.4.12:
   version "0.4.12"
@@ -13793,6 +13856,11 @@ schema-utils@^3.0.0:
     "@types/json-schema" "^7.0.8"
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
+
+screenfull@^5.0.0:
+  version "5.2.0"
+  resolved "https://registry.npmmirror.com/screenfull/download/screenfull-5.2.0.tgz#6533d524d30621fc1283b9692146f3f13a93d1ba"
+  integrity sha512-9BakfsO2aUQN2K9Fdbj87RJIEZ82Q9IGim7FqM5OsebfoFC6ZHXgDq/KvniuLTPdeM8wY2o6Dj3WQ7KeQCj3cA==
 
 scroll-into-view-if-needed@^2.2.25:
   version "2.2.28"

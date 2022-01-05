@@ -1,14 +1,9 @@
 import { DirectMessageReceiver } from './mq/direct';
 import { config } from './config';
-import type { WorkerStatus } from './def';
 
-interface WorkStatusData {
-    workerId: string;
-    status: string;
-    updateTime: Date;
-}
+
 export class WorkerAdmin {
-    private status: Map<string, WorkStatusData> = new Map<string, WorkStatusData>();
+    private status: Map<string, API.WorkerStatus> = new Map<string, API.WorkerStatus>();
     private timeout = config.WORKER_OFFLINE_TIMEOUT;
     private msgReceiver?: DirectMessageReceiver;
 
@@ -21,18 +16,15 @@ export class WorkerAdmin {
     }
 
     onMessage(msg: string): void {
-        const msgObj: WorkerStatus = JSON.parse(msg);
-        const workerId = msgObj.workerId;
-        const status = msgObj.status;
-        const updateTime = new Date();
-        this.status.set(workerId, { workerId, status, updateTime });
+        const status: API.WorkerStatus = JSON.parse(msg);
+        this.status.set(status.workerId, status);
     }
 
-    getStatus(): WorkStatusData[] {
+    getStatus(): API.WorkerStatus[] {
         const invalidWorkerIds: string[] = [];
         this.status.forEach((value, key) => {
             const now = new Date();
-            const diff = now.getTime() - value.updateTime.getTime();
+            const diff = now.getTime() - value.updateAt;
             if (diff > this.timeout || value.status === 'dead') {
                 invalidWorkerIds.push(key);
             }
@@ -40,4 +32,9 @@ export class WorkerAdmin {
         invalidWorkerIds.forEach(id => this.status.delete(id));
         return Array.from(this.status.values());
     }
+}
+
+
+export class SchedulerAdmin {
+
 }

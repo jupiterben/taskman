@@ -2,8 +2,8 @@ import express from 'express';
 import { config } from './config';
 import type { AddressInfo } from 'net';
 import cors from 'cors';
-import { TaskScheduler } from './jobScheduler';
-import { WorkerAdmin } from './workerAdmin';
+import { TaskScheduler } from './scheduler';
+import { WorkerAdmin } from './admin';
 
 const app = express();
 const workerService = new WorkerAdmin();

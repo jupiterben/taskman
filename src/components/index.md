@@ -114,7 +114,7 @@ export default () => {
  */
 import { message } from 'antd';
 import React from 'react';
-import NoticeIcon from '@/components/NoticeIcon/NoticeIcon';
+// import NoticeIcon from '@/components/NoticeIcon/NoticeIcon';
 
 export default () => {
   const list = [

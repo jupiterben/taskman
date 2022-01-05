@@ -1,8 +1,4 @@
-export interface WorkerStatus {
-    workerId: string;
-    status: string;
-    content: string;
-}
+
 
 export interface CreateAnimFileTaskParam {
     maxFile: string;

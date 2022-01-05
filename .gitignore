@@ -39,3 +39,4 @@ screenshot
 
 build
 yarn.lock
+src/api/typings.d.ts

@@ -2,7 +2,7 @@
 import { config } from './config';
 import * as uuid from 'uuid';
 import { DirectMessageSender } from './mq/direct';
-import type { TaskPayload, TaskStatusData, WorkerStatus } from './def';
+import type { TaskPayload, TaskStatusData } from './def';
 import { TaskMessageReceiver } from './mq/taskqueue';
 
 type TaskHandler = (...args: any) => AsyncIterableIterator<TaskStatusData>;
@@ -13,6 +13,7 @@ export class Worker {
     status: string = "idle";
     statusContent: string = "";
     heartBeatTimer?: NodeJS.Timer;
+    createTime: Date = new Date();
     //task
     taskReceiver?: TaskMessageReceiver;
     taskResultSender?: DirectMessageSender;
@@ -100,10 +101,12 @@ export class Worker {
     }
 
     reportStatus() {
-        const send: WorkerStatus = {
+        const send: API.WorkerStatus = {
             workerId: this.id,
             status: this.status,
-            content: this.statusContent
+            desc: this.statusContent,
+            createdAt: this.createTime?.getTime(),
+            updateAt: Date.now()
         };
         this.statusReporter?.send(JSON.stringify(send));
     }
