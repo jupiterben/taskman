@@ -115,7 +115,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
       break;
     case 'post':
       (() => {
-        const i = Math.ceil(Math.random() * 10000);
+        //const i = Math.ceil(Math.random() * 10000);
         const newRule: API.TaskListItem = {
           key: tableListDataSource.length,
           href: 'https://ant.design',

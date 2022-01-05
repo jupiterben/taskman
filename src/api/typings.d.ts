@@ -2,7 +2,6 @@
 /* eslint-disable */
 
 declare namespace API {
-
   type PageParams = {
     current?: number;
     pageSize?: number;
@@ -37,11 +36,11 @@ declare namespace API {
     status?: number;
     updatedAt?: string;
     createdAt?: string;
-  }
+  };
 
   type WorkerList = {
     data?: WorkerListItem[];
-  }
+  };
 
   type ErrorResponse = {
     /** 业务约定的错误码 */

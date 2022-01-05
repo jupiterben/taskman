@@ -7,7 +7,6 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { task } from '@/api';
 
-
 export const TaskList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -111,7 +110,7 @@ export const TaskList: React.FC = () => {
             onClick={() => {
               handleModalVisible(true);
             }}
-           />
+          />,
         ]}
         request={task}
         columns={columns}
@@ -139,9 +138,9 @@ export const TaskList: React.FC = () => {
               </span>
             </div>
           }
-         />
+        />
       )}
-     
+
       <Drawer
         width={600}
         visible={showDetail}

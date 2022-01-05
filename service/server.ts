@@ -1,7 +1,7 @@
 import express from 'express';
 import { config } from './config';
 import type { AddressInfo } from 'net';
-import * as cors from 'cors';
+import cors from 'cors';
 import { TaskScheduler } from './jobScheduler';
 import { WorkerAdmin } from './workerAdmin';
 
@@ -30,7 +30,7 @@ process.once('SIGINT', async function () {
 app.use(express.static('dist'));
 app.use(cors());
 
-app.get('/api/job', async function (req, res) {
+app.get('/api/task', async function (req, res) {
     const status = jobService.getStatus();
     res.json([status]);
 });

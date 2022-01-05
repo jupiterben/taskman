@@ -27,7 +27,6 @@ export async function worker() {
   });
 }
 
-
 // /** 新建规则 PUT /api/rule */
 // export async function updateRule(options?: { [key: string]: any }) {
 //   return request<API.RuleListItem>('/api/rule', {
