@@ -8,8 +8,8 @@
   },
   "scripts": {
     "worker": "npm-run-all --parallel worker-create worker-check",
-    "worker-sample": "npx ts-node src/service/worker_sample.ts",
-    "server": "npx ts-node service/server.ts",
+    "worker-sample": "npx ts-node service/worker_sample.ts",
+    "server": "cross-env UMI_ENV=dev npx ts-node src/service/server.ts",
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "cross-env umi build",
     "deploy": "npm run build && npm run gh-pages",

@@ -24,6 +24,7 @@
       "@@/*": ["./src/.umi/*"]
     }
   },
+  
   "include": [
     "mock/**/*",
     "src/**/*",
@@ -38,7 +39,8 @@
     ".stylelintrc.js",
     ".prettierrc.js",
     "jest.config.js",
+    "src/api/typings.ts",
     "mock/*"
-, "service"  ],
+  ],
   "exclude": ["node_modules", "build", "dist", "scripts", "src/.umi/*", "webpack", "jest"]
 }

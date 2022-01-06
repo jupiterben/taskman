@@ -1,40 +1,37 @@
 // @ts-ignore
 /* eslint-disable */
 
-declare namespace API {
+export declare namespace API {
   type PageParams = {
     current?: number;
     pageSize?: number;
   };
 
+  type TaskItem = {
+    name: string;
+  }
 
-  type TaskListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
+  type JobStatus = {
+    name: string;
+    desc: string;
+    status: string;
+    updateAt: Date;
+    createdAt: Date;
+    lastRunTime: Date;
+    offline: boolean;
+    tasks: TaskItem[];
   };
 
-  type TaskList = {
-    data?: TaskListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
+  type JobList = {
+    data: string[];
   };
 
   type WorkerStatus = {
     workerId: string;
     desc: string;
     status: string;
-    createdAt: number;
-    updateAt: number;
+    createdAt: Date;
+    updateAt: Date;
   };
 
   type WorkerList = {

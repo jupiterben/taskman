@@ -31,8 +31,11 @@
             "type": "node",
             "request": "launch",
             "args": [
-                "service/server.ts"
+                "src/service/server.ts"
             ],
+            "env": {
+                "NODE_ENV": "development"
+            },
             "runtimeArgs": [
                 "-r",
                 "ts-node/register"

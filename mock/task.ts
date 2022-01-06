@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import moment from 'moment';
 import { parse } from 'url';
+import type { API } from '@/types';
 
 // // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
