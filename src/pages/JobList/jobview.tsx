@@ -6,10 +6,10 @@ import React, { useState, useRef } from 'react';
 // import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 // import ProDescriptions from '@ant-design/pro-descriptions';
 // import { task } from '@/api';
-// import type { API } from '@/types';
+import type { API } from '@/types';
 
 
-const JobView: React.FC = (props) => {
+const JobView: React.FC<API.JobStatus> = (props) => {
     return (
         <div>{JSON.stringify(props)}</div>
     );

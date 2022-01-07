@@ -23,7 +23,7 @@ export declare namespace API {
   };
 
   type JobList = {
-    data: string[];
+    data: JobStatus[];
   };
 
   type WorkerStatus = {

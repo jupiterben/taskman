@@ -27,7 +27,7 @@
             "webRoot": "${workspaceFolder}/src"
         },
         {
-            "name": "Debug Server",
+            "name": "Debug Server Dev",
             "type": "node",
             "request": "launch",
             "args": [
@@ -35,6 +35,24 @@
             ],
             "env": {
                 "NODE_ENV": "development"
+            },
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "Debug Server Prod",
+            "type": "node",
+            "request": "launch",
+            "args": [
+                "src/service/server.ts"
+            ],
+            "env": {
+                "NODE_ENV": "production"
             },
             "runtimeArgs": [
                 "-r",

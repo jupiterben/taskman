@@ -9,7 +9,8 @@ export const JobList: React.FC = () => {
   const [jobList, setJobList] = useState<API.JobList>({ data: [] });
   useInterval(async () => {
     try {
-      setJobList(await GetJob());
+      const jobList = await GetJob();
+      if (jobList) setJobList(jobList);
     } catch (e) {
       console.log(e);
     }
@@ -17,7 +18,7 @@ export const JobList: React.FC = () => {
 
   return (
     <PageContainer>
-      {jobList.data.map(job => <JobView j={job} />)}
+      {JSON.stringify(jobList)}
     </PageContainer>
   );
 };

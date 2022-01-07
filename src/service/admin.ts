@@ -16,7 +16,6 @@ abstract class AdminBase {
   abstract onMessage(msg: string): void;
 }
 
-
 export class WorkerAdmin extends AdminBase {
   private status: Map<string, API.WorkerStatus> = new Map<string, API.WorkerStatus>();
 
@@ -49,6 +48,25 @@ export class WorkerAdmin extends AdminBase {
 
 export class JobAdmin extends AdminBase {
   private status: Map<string, API.JobStatus> = new Map<string, API.JobStatus>();
+
+  constructor() {
+    super();
+    this.init();
+  }
+  init() {
+    const defaultJob: API.JobStatus = {
+      name: "GenAnimFile",
+      desc: "动画文件生成",
+      status: "Offline",
+      updateAt: new Date(),
+      createdAt: new Date(),
+      lastRunTime: new Date(),
+      offline: false,
+      tasks: []
+    }
+    this.status.set(defaultJob.name, defaultJob);
+  }
+
   onMessage(msg: string): void {
     const obj: Record<string, unknown> = JSON.parse(msg);
     const status: API.JobStatus =

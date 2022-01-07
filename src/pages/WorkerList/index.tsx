@@ -34,7 +34,8 @@ const WorkerListView = () => {
   const [workerList, setWorkerList] = useState<API.WorkerList>({ data: [] });
   useInterval(async () => {
     try {
-      setWorkerList(await GetWorker());
+      const result = await GetWorker();
+      if(result) setWorkerList(result);
     } catch (e) {
       console.log(e);
     }
