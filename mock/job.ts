@@ -10,7 +10,7 @@ function getJobList(req: Request, res: Response, u: string) {
   const result: API.JobList = {
     data: [
       {
-        name: '动画文件生成Job',
+        name: '动画文件生成任务',
         desc: 'job1 desc',
         status: 'running',
         updateAt: new Date(),
@@ -19,16 +19,12 @@ function getJobList(req: Request, res: Response, u: string) {
         offline: false,
         tasks: [
           {
-            name: 'task1',
-            desc: 'task1 desc',
-            progress: 0,
-            status: 'inqueue',
+            meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: 'customData' },
+            stateData: { state: 1, content: 'content' },
           },
           {
-            name: 'task2',
-            desc: 'task1 desc',
-            progress: 0.5,
-            status: 'running',
+            meta: { uuid: '2', name: 'task1', args: ['1', '2'], customData: 'customData' },
+            stateData: { state: 1, content: 'content' },
           },
         ],
       }

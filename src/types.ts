@@ -7,10 +7,22 @@ export declare namespace API {
     pageSize?: number;
   };
 
-  type TaskItem = {
+  type TaskMeta = {
+    uuid: string;
     name: string;
-    progress: number;
-    status: string;
+    args: string[];
+    customData: string;
+  };
+  type TaskStateData = {
+    state: number;
+    content: any;
+  };
+  type TaskResult = {
+    meta: TaskMeta;
+    state: number;
+    finishState: TaskFinishState;
+    curProgress: number;
+    totalProgress: number;
     desc: string;
   };
 
@@ -22,7 +34,7 @@ export declare namespace API {
     createdAt: Date;
     lastRunTime: Date;
     offline: boolean;
-    tasks: TaskItem[];
+    tasks: TaskResult[];
   };
 
   type JobList = {
@@ -49,26 +61,18 @@ export declare namespace API {
     /** 业务上的请求是否成功 */
     success?: boolean;
   };
+}
 
-  // type NoticeIconList = {
-  //   data?: NoticeIconItem[];
-  //   /** 列表的内容总数 */
-  //   total?: number;
-  //   success?: boolean;
-  // };
+export enum TaskStateEnum {
+  Start = 0,
+  Running = 1,
+  Delay = 2,
+  Finish = 3
+}
 
-  // type NoticeIconItemType = 'notification' | 'message' | 'event';
-
-  // type NoticeIconItem = {
-  //   id?: string;
-  //   extra?: string;
-  //   key?: string;
-  //   read?: boolean;
-  //   avatar?: string;
-  //   title?: string;
-  //   status?: string;
-  //   datetime?: string;
-  //   description?: string;
-  //   type?: NoticeIconItemType;
-  // };
+export enum TaskFinishState {
+  Success,
+  Fail,
+  Cancel,
+  Exception
 }

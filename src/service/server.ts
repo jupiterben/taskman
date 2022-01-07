@@ -16,8 +16,7 @@ const server = app.listen(80, async function () {
 
     console.log('Starting Worker Status Service...');
     await workerService.start(Config.MQ_SERVER, Config.WORKER_STATE_REPORT_QUEUE);
-  }
-  catch (e) {
+  } catch (e) {
     console.log(e);
   }
   const addr = server.address() as AddressInfo;

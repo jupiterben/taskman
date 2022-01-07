@@ -22,11 +22,11 @@ export class WorkerAdmin extends AdminBase {
   onMessage(msg: string): void {
     const obj: Record<string, unknown> = JSON.parse(msg);
     const status: API.WorkerStatus = {
-      workerId: obj['workerId'] as string,
-      desc: obj['desc'] as string,
-      status: obj['status'] as string,
-      createdAt: new Date(obj['createAt'] as number),
-      updateAt: new Date(obj['updateAt'] as number),
+      workerId: obj.workerId as string,
+      desc: obj.desc as string,
+      status: obj.status as string,
+      createdAt: new Date((obj.createAt as number) * 1000),
+      updateAt: new Date((obj.updateAt as number) * 1000),
     };
     this.status.set(status.workerId, status);
   }
@@ -53,30 +53,30 @@ export class JobAdmin extends AdminBase {
     this.init();
   }
   init() {
-    const defaultJob: API.JobStatus = {
-      name: "GenAnimFile",
-      desc: "动画文件生成",
-      status: "Offline",
-      updateAt: new Date(),
-      createdAt: new Date(),
-      lastRunTime: new Date(),
-      offline: false,
-      tasks: []
-    }
-    this.status.set(defaultJob.name, defaultJob);
+    // const defaultJob: API.JobStatus = {
+    //   name: '动画文件生成',
+    //   desc: '动画文件生成',
+    //   status: 'Offline',
+    //   updateAt: new Date(),
+    //   createdAt: new Date(),
+    //   lastRunTime: new Date(),
+    //   offline: false,
+    //   tasks: [],
+    // };
+    // this.status.set(defaultJob.name, defaultJob);
   }
 
   onMessage(msg: string): void {
     const obj: Record<string, unknown> = JSON.parse(msg);
     const status: API.JobStatus = {
-      name: obj['name'] as string,
-      desc: obj['desc'] as string,
-      status: obj['status'] as string,
-      createdAt: new Date(obj['createAt'] as number),
-      updateAt: new Date(obj['updateAt'] as number),
-      lastRunTime: new Date(obj['lastRunTime'] as number),
-      tasks: obj['tasks'] as API.TaskItem[],
-      offline: obj['offline'] as boolean,
+      name: obj.name as string,
+      desc: obj.desc as string,
+      status: obj.status as string,
+      createdAt: new Date((obj.createAt as number) * 1000),
+      updateAt: new Date((obj.updateAt as number) * 1000),
+      lastRunTime: new Date((obj.lastRunTime as number) * 1000),
+      tasks: obj.tasks as API.TaskResult[],
+      offline: obj.offline as boolean,
     };
     this.status.set(status.name, status);
   }

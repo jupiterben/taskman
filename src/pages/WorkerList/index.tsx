@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { GetWorker } from '@/api';
 import ProCard from '@ant-design/pro-card';
@@ -20,11 +20,11 @@ function renderProp(head: string, content: string) {
 
 function renderWorkerItem(w: API.WorkerStatus) {
   //const style = classNames(styles.colorTable);
-  const createTime = moment().from(w.createdAt);
+  const elapseTime = moment().from(w.createdAt);
   return (
     <ProCard title="Worker:" extra={w.workerId} tooltip="" style={{ maxWidth: 300 }}>
       <table>
-        {renderProp('创建时间:', createTime)}
+        {renderProp('运行时间:', elapseTime)}
         {renderProp('状态:', w.status)}
         {renderProp('描述:', w.desc)}
       </table>
@@ -34,13 +34,20 @@ function renderWorkerItem(w: API.WorkerStatus) {
 
 const WorkerListView = () => {
   const [workerList, setWorkerList] = useState<API.WorkerList>({ data: [] });
-  useInterval(async () => {
+
+  const updateData = async () => {
     try {
       const result = await GetWorker();
-      if(result) setWorkerList(result);
+      if (result) setWorkerList(result);
     } catch (e) {
       console.log(e);
     }
+  };
+  useEffect(() => {
+    updateData();
+  }, []);
+  useInterval(() => {
+    updateData();
   }, 1000);
 
   return (

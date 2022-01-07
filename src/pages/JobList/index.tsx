@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { API } from '@/types';
 import JobView from './jobview';
@@ -7,13 +7,21 @@ import { GetJob } from '@/api';
 
 export const JobList: React.FC = () => {
   const [jobList, setJobList] = useState<API.JobList>({ data: [] });
-  useInterval(async () => {
+
+  const updateData = async () => {
     try {
-      const jobList = await GetJob();
-      if (jobList) setJobList(jobList);
+      const result = await GetJob();
+      if (result) setJobList(result);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  useEffect(() => {
+    updateData();
+  }, []);
+  useInterval(() => {
+    updateData();
   }, 1000);
 
   return (

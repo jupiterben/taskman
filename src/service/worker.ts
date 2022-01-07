@@ -1,11 +1,10 @@
 import { Config } from './config';
 import * as uuid from 'uuid';
 import { DirectMessageSender } from './mq/direct';
-import type { TaskPayload, TaskStatusData } from './def';
 import { TaskMessageReceiver } from './mq/taskqueue';
 import type { API } from '@/types';
 
-type TaskHandler = (...args: any) => AsyncIterableIterator<TaskStatusData>;
+type TaskHandler = (...args: any) => AsyncIterableIterator<API.TaskStateData>;
 
 export class Worker {
   id: string;
@@ -41,7 +40,7 @@ export class Worker {
   }
 
   handleTaskMessage(msg: string): boolean {
-    const payload: TaskPayload = JSON.parse(msg);
+    const payload: any = JSON.parse(msg);
     const taskName = payload.task;
     if (!this.taskHandlers.has(taskName)) {
       return false;
@@ -53,7 +52,7 @@ export class Worker {
           JSON.stringify({
             taskId: payload.taskId,
             status: status.state,
-            data: status.data,
+            data: status.content,
           }),
         );
       }
