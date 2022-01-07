@@ -9,7 +9,10 @@ export declare namespace API {
 
   type TaskItem = {
     name: string;
-  }
+    progress: number;
+    status: string;
+    desc: string;
+  };
 
   type JobStatus = {
     name: string;
@@ -23,7 +26,7 @@ export declare namespace API {
   };
 
   type JobList = {
-    data: string[];
+    data: JobStatus[];
   };
 
   type WorkerStatus = {

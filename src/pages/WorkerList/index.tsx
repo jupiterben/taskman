@@ -7,6 +7,7 @@ import { List } from 'antd';
 // import classNames from 'classnames';
 // import styles from './index.less';
 import type { API } from '@/types';
+import moment from 'moment';
 
 function renderProp(head: string, content: string) {
   return (
@@ -19,10 +20,11 @@ function renderProp(head: string, content: string) {
 
 function renderWorkerItem(w: API.WorkerStatus) {
   //const style = classNames(styles.colorTable);
+  const createTime = moment().from(w.createdAt);
   return (
-    <ProCard title="Worker:" extra={w.workerId} tooltip="" style={{ maxWidth: 400 }}>
+    <ProCard title="Worker:" extra={w.workerId} tooltip="" style={{ maxWidth: 300 }}>
       <table>
-        {renderProp('创建时间:', w.createdAt.toLocaleString())}
+        {renderProp('创建时间:', createTime)}
         {renderProp('状态:', w.status)}
         {renderProp('描述:', w.desc)}
       </table>

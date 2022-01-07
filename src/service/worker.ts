@@ -114,8 +114,8 @@ export class Worker {
       workerId: this.id,
       status: this.status,
       desc: this.statusContent,
-      createdAt: this.createTime?.getTime(),
-      updateAt: Date.now(),
+      createdAt: this.createTime,
+      updateAt: new Date(),
     };
     this.statusReporter?.send(JSON.stringify(send));
   }
