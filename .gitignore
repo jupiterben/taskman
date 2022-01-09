@@ -39,4 +39,5 @@ screenshot
 
 build
 yarn.lock
-src/api/typings.d.ts
+taskman/taskman/obj
+taskman/taskman/bin/Debug/net5.0/ref

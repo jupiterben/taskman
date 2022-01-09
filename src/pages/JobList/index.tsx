@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { API } from '@/types';
-import JobView from './jobview';
+import type { API } from '@/api_types';
 import { useInterval } from 'ahooks';
 import { GetJob } from '@/api';
+import JobStatus from './jobstatus';
 
 export const JobList: React.FC = () => {
   const [jobList, setJobList] = useState<API.JobList>({ data: [] });
@@ -27,7 +27,7 @@ export const JobList: React.FC = () => {
   return (
     <PageContainer>
       {jobList.data.map((job) => (
-        <JobView key={job.name} data={job} />
+        <JobStatus key={job.name} data={job} />
       ))}
     </PageContainer>
   );

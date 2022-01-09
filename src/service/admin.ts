@@ -1,6 +1,6 @@
 import { BroadCastReceiver } from './mq/broadcast';
 import { Config } from './config';
-import type { API } from '@/types';
+import type { API } from '@/api_types';
 
 abstract class AdminBase {
   protected timeout = Config.WORKER_OFFLINE_TIMEOUT;
@@ -27,6 +27,7 @@ export class WorkerAdmin extends AdminBase {
       status: obj.status as string,
       createdAt: new Date((obj.createAt as number) * 1000),
       updateAt: new Date((obj.updateAt as number) * 1000),
+      machine: ''
     };
     this.status.set(status.workerId, status);
   }
@@ -71,12 +72,9 @@ export class JobAdmin extends AdminBase {
     const status: API.JobStatus = {
       name: obj.name as string,
       desc: obj.desc as string,
-      status: obj.status as string,
-      createdAt: new Date((obj.createAt as number) * 1000),
       updateAt: new Date((obj.updateAt as number) * 1000),
       lastRunTime: new Date((obj.lastRunTime as number) * 1000),
       tasks: obj.tasks as API.TaskResult[],
-      offline: obj.offline as boolean,
     };
     this.status.set(status.name, status);
   }
@@ -86,7 +84,7 @@ export class JobAdmin extends AdminBase {
       const now = new Date();
       const diff = now.getTime() - value.updateAt.getTime();
       if (diff > this.timeout) {
-        value.offline = true;
+        //value.offline = true;
       }
     });
     return Array.from(this.status.values());

@@ -6,8 +6,8 @@ import React from 'react';
 // import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 // import ProDescriptions from '@ant-design/pro-descriptions';
 // import { task } from '@/api';
-import type { API } from '@/types';
-import { TaskStateEnum } from '@/types';
+import type { API } from '@/api_types';
+import { TaskStateEnum } from '@/api_types';
 import { Progress } from 'antd';
 import ProList from '@ant-design/pro-list';
 
@@ -18,9 +18,9 @@ function renderTaskContent(data: API.TaskResult) {
     justifyContent: 'flex-end',
   };
   const state = data.state;
-  let progress = 0;//data.stateData.percent;
+  let progress = 0; //data.stateData.percent;
   if (state == TaskStateEnum.Running) {
-    progress = data.curProgress * 100 / data.totalProgress;
+    progress =  data.progress || 0;
   } else if (state == TaskStateEnum.Finish) {
     progress = 100;
   }
@@ -41,7 +41,7 @@ function getTaskListViewData(data: API.TaskResult[]) {
       title: title,
       actions: [],
       content: renderTaskContent(item),
-    }
+    };
   });
 }
 

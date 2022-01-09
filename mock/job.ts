@@ -1,32 +1,35 @@
+import { API, TaskStateEnum } from '../src/api_types';
 import { Request, Response } from 'express';
-import type { API } from '@/types';
+import { randomBytes } from 'crypto'
+
+function genTask(num: number) {
+  const tasks: API.TaskResult[] = [];
+  for (let i = 0; i < num; i++) {
+    const task: API.TaskResult = {
+      meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: { animFileName: randomBytes(16).toString("hex"), submitter: "binfu" } },
+      state: TaskStateEnum.Running,
+      startTime: new Date(),
+      endTime: new Date(),
+    };
+    tasks.push(task);
+  }
+  return tasks;
+}
+const tasks = genTask(100);
 
 function getJobList(req: Request, res: Response, u: string) {
   let realUrl = u;
   if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
     realUrl = req.url;
   }
-
   const result: API.JobList = {
     data: [
       {
         name: '动画文件生成任务',
         desc: 'job1 desc',
-        status: 'running',
         updateAt: new Date(),
-        createdAt: new Date(),
         lastRunTime: new Date(),
-        offline: false,
-        tasks: [
-          {
-            meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: 'customData' },
-            stateData: { state: 1, content: 'content' },
-          },
-          {
-            meta: { uuid: '2', name: 'task1', args: ['1', '2'], customData: 'customData' },
-            stateData: { state: 1, content: 'content' },
-          },
-        ],
+        tasks: tasks
       }
     ]
   }
@@ -36,3 +39,4 @@ function getJobList(req: Request, res: Response, u: string) {
 export default {
   'GET /api/job': getJobList,
 };
+

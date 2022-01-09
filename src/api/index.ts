@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
-import type { API } from '@/types';
+import type { API } from '@/api_types';
 
 /** 获取任务列表 GET /api/task */
 export async function GetJob(params?: API.PageParams, options?: { [key: string]: any }) {

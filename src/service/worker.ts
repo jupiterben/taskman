@@ -2,9 +2,9 @@ import { Config } from './config';
 import * as uuid from 'uuid';
 import { DirectMessageSender } from './mq/direct';
 import { TaskMessageReceiver } from './mq/taskqueue';
-import type { API } from '@/types';
+import { API } from '@/api_types';
 
-type TaskHandler = (...args: any) => AsyncIterableIterator<API.TaskStateData>;
+type TaskHandler = (...args: any) => AsyncIterableIterator<API.TaskResult>;
 
 export class Worker {
   id: string;
@@ -52,7 +52,7 @@ export class Worker {
           JSON.stringify({
             taskId: payload.taskId,
             status: status.state,
-            data: status.content,
+            // data: status.content,
           }),
         );
       }
@@ -115,6 +115,7 @@ export class Worker {
       desc: this.statusContent,
       createdAt: this.createTime,
       updateAt: new Date(),
+      machine: ''
     };
     this.statusReporter?.send(JSON.stringify(send));
   }

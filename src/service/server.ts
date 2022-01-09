@@ -3,7 +3,7 @@ import { Config } from './config';
 import type { AddressInfo } from 'net';
 import cors from 'cors';
 import { WorkerAdmin, JobAdmin } from './admin';
-import type { API } from '@/types';
+import type { API } from '@/api_types';
 
 const app = express();
 const workerService = new WorkerAdmin();

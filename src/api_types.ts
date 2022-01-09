@@ -1,5 +1,18 @@
 // @ts-ignore
 /* eslint-disable */
+export enum TaskStateEnum {
+  Start = 0,
+  Running = 1,
+  Delay = 2,
+  Finish = 3,
+}
+
+export enum TaskFinishState {
+  Success,
+  Fail,
+  Cancel,
+  Exception,
+}
 
 export declare namespace API {
   type PageParams = {
@@ -10,30 +23,30 @@ export declare namespace API {
   type TaskMeta = {
     uuid: string;
     name: string;
-    args: string[];
-    customData: string;
-  };
-  type TaskStateData = {
-    state: number;
-    content: any;
+    args: any[];
+    desc?: string;
+    customData?: any;
   };
   type TaskResult = {
     meta: TaskMeta;
-    state: number;
-    finishState: TaskFinishState;
-    curProgress: number;
-    totalProgress: number;
-    desc: string;
+    state: TaskStateEnum;
+    startTime: Date;
+    endTime: Date; //or estimate end time
+    finishState?: TaskFinishState;
+    progress?: number;
+    desc?: string;
+  };
+
+  type GenAnimFileMetaData = {
+    animFileName: string;
+    submitter: string;
   };
 
   type JobStatus = {
     name: string;
     desc: string;
-    status: string;
     updateAt: Date;
-    createdAt: Date;
     lastRunTime: Date;
-    offline: boolean;
     tasks: TaskResult[];
   };
 
@@ -43,6 +56,7 @@ export declare namespace API {
 
   type WorkerStatus = {
     workerId: string;
+    machine: string;
     desc: string;
     status: string;
     createdAt: Date;
@@ -63,16 +77,3 @@ export declare namespace API {
   };
 }
 
-export enum TaskStateEnum {
-  Start = 0,
-  Running = 1,
-  Delay = 2,
-  Finish = 3
-}
-
-export enum TaskFinishState {
-  Success,
-  Fail,
-  Cancel,
-  Exception
-}

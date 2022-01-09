@@ -6,7 +6,7 @@ import { useInterval } from 'ahooks';
 import { List } from 'antd';
 // import classNames from 'classnames';
 // import styles from './index.less';
-import type { API } from '@/types';
+import type { API } from '@/api_types';
 import moment from 'moment';
 
 function renderProp(head: string, content: string) {
