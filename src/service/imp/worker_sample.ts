@@ -1,4 +1,3 @@
-import { sleep } from './util';
 import { Worker } from './worker';
 
 const worker = new Worker();

@@ -2,8 +2,9 @@ import express from 'express';
 import { Config } from './config';
 import type { AddressInfo } from 'net';
 import cors from 'cors';
-import { WorkerAdmin, JobAdmin } from './admin';
 import type { API } from '@/api_types';
+import { WorkerAdmin } from './admin/worker';
+import { JobAdmin } from './admin/job';
 
 const app = express();
 const workerService = new WorkerAdmin();

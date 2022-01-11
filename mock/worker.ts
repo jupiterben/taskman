@@ -7,23 +7,25 @@ const mockWorkers: API.WorkerStatus[] =
         {
             workerId: randomBytes(16).toString("hex"),
             desc: "", status: "Idle",
-            createdAt: new Date(),
-            updateAt: new Date(),
-            machine: "10.10.11.1",
+            createdAt: Date.now(),
+            updateAt: Date.now(),
+            machineName: "10.10.11.1",
+            machineIP: "10.10.11.1",
         },
         {
             workerId: randomBytes(16).toString("hex"),
             desc: "", status: "Idle",
-            createdAt: new Date(),
-            updateAt: new Date(),
-            machine: "10.10.11.1",
+            createdAt: Date.now(),
+            updateAt: Date.now(),
+            machineName: "10.10.11.1",
+            machineIP: "10.10.11.1",
         },
     ];
 
 function getWorkerList(req: Request, res: Response, u: string) {
     mockWorkers.forEach(w => {
         w.status = "Running";
-        w.updateAt = new Date();
+        w.updateAt = Date.now();
         w.desc = randomBytes(16).toString("ascii");
     });
 

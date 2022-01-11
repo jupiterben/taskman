@@ -1,10 +1,11 @@
 // @ts-ignore
 /* eslint-disable */
 export enum TaskStateEnum {
-  Start = 0,
-  Running = 1,
-  Delay = 2,
-  Finish = 3,
+  Created = 0,
+  Start = 1,
+  Running = 2,
+  Delay = 3,
+  Finish = 4,
 }
 
 export enum TaskFinishState {
@@ -12,6 +13,12 @@ export enum TaskFinishState {
   Fail,
   Cancel,
   Exception,
+}
+
+export enum NodeState {
+  Idle,
+  Busy,
+  Dead,
 }
 
 export declare namespace API {
@@ -24,17 +31,18 @@ export declare namespace API {
     uuid: string;
     name: string;
     args: any[];
+    createdAt: number;
     desc?: string;
-    customData?: any;
+    customData?: string;
   };
   type TaskResult = {
     meta: TaskMeta;
     state: TaskStateEnum;
-    startTime: Date;
-    endTime: Date; //or estimate end time
     finishState?: TaskFinishState;
-    progress?: number;
     desc?: string;
+    startTime: number;
+    endTime: number;      //or estimate end time
+    progress?: number;
   };
 
   type GenAnimFileMetaData = {
@@ -45,8 +53,8 @@ export declare namespace API {
   type JobStatus = {
     name: string;
     desc: string;
-    updateAt: Date;
-    lastRunTime: Date;
+    updateAt: number;
+    lastRunTime: number;
     tasks: TaskResult[];
   };
 
@@ -54,17 +62,20 @@ export declare namespace API {
     data: JobStatus[];
   };
 
-  type WorkerStatus = {
-    workerId: string;
-    machine: string;
+  type NodeStatus = {
+    nodeId: string;
+    type: string;
     desc: string;
-    status: string;
-    createdAt: Date;
-    updateAt: Date;
+    machineName: string;
+    machineIP: string;
+    state: NodeState;
+    stateDesc: string;
+    createdAt: number;
+    updateAt: number;
   };
 
-  type WorkerList = {
-    data: WorkerStatus[];
+  type NodeList = {
+    data: NodeStatus[];
   };
 
   type ErrorResponse = {

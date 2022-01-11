@@ -1,7 +1,9 @@
 
-import { API, TaskStateEnum } from '@/api_types';
+import type { API } from '@/api_types';
+import { TaskStateEnum } from '@/api_types';
+import ProList from '@ant-design/pro-list';
 import {
-    Avatar,
+    Button,
     Card,
     Col,
     List,
@@ -9,8 +11,8 @@ import {
     Row,
 } from 'antd';
 import moment from 'moment';
-import { FC } from 'react';
-import styles from './style.less';
+import type { FC } from 'react';
+import styles from '../../utils/style.less';
 
 const Info: FC<{
     title: React.ReactNode;
@@ -25,25 +27,35 @@ const Info: FC<{
 );
 
 const ListContent: FC<{ data: API.TaskResult }> = ({ data }) => {
-    const customData = data.meta.customData as API.GenAnimFileMetaData;
+    const customData = JSON.parse(data.meta.customData || "{}") as API.GenAnimFileMetaData;
     let progress = 0;
     let status: any;
+    let startTime = "N/A";
+    let endTime = "N/A";
     if (data.state == TaskStateEnum.Finish) {
         progress = 100;
         status = "success"
-    } else {
-        progress = 50;
+        startTime = moment(new Date(data.startTime * 1000)).format('YYYY-MM-DD HH:mm');
+        endTime = moment(new Date(data.endTime * 1000)).format('YYYY-MM-DD HH:mm');
+    } else if (data.state == TaskStateEnum.Running) {
+        progress = data.progress || 0;
         status = "active";
+        startTime = moment(new Date(data.startTime * 1000)).format('YYYY-MM-DD HH:mm');
     }
+
     return (
         <div className={styles.listContent}>
             <div className={styles.listContentItem}>
-                <span>Owner</span>
+                <span>提交人</span>
                 <p>{customData.submitter}</p>
             </div>
             <div className={styles.listContentItem}>
                 <span>开始时间</span>
-                <p>{moment(data.startTime).format('YYYY-MM-DD HH:mm')}</p>
+                <p>{startTime}</p>
+            </div>
+            <div className={styles.listContentItem}>
+                <span>结束时间</span>
+                <p>{endTime}</p>
             </div>
             <div className={styles.listContentItem}>
                 <Progress percent={progress} status={status} strokeWidth={6} style={{ width: 180 }} />
@@ -53,7 +65,7 @@ const ListContent: FC<{ data: API.TaskResult }> = ({ data }) => {
 };
 
 function renderTask(task: API.TaskResult) {
-    const customData = task.meta.customData as API.GenAnimFileMetaData;
+    const customData = JSON.parse(task.meta.customData || "{}") as API.GenAnimFileMetaData;
     return (
         <List.Item>
             <List.Item.Meta
@@ -65,18 +77,14 @@ function renderTask(task: API.TaskResult) {
     );
 }
 
-function renderTaskContent(list: API.TaskResult[]) {
-    const paginationProps = {
-        showSizeChanger: true,
-        showQuickJumper: true,
-        pageSize: 5,
-        total: list.length,
-    };
+function renderTaskList(list: API.TaskResult[]) {
     return (
-        <List
+        <ProList
             size="large"
             // rowKey="id"
-            pagination={paginationProps}
+            pagination={{
+                pageSize: 10,
+            }}
             dataSource={list}
             renderItem={renderTask}
         />
@@ -87,23 +95,35 @@ const JobStatus: React.FC<{ data: API.JobStatus }> = (props) => {
     const { data } = props;
     const runningNum = data.tasks.filter(task => task.state == TaskStateEnum.Running).length;
     const inqueueNum = data.tasks.filter(task => task.state == TaskStateEnum.Start).length;
-    const finishNum = data.tasks.filter(task => task.state == TaskStateEnum.Finish).length;
+    const finishTasks = data.tasks.filter(task => task.state == TaskStateEnum.Finish);
+    const finishNum = finishTasks.length;
+
+    let avgTime = 0;
+    if (finishTasks.length > 0) {
+        let totalTime = 0;
+        finishTasks.forEach(task => {
+            totalTime += (task.endTime - task.startTime);
+        });
+        avgTime = totalTime / finishTasks.length;
+    }
+    const avgStr = moment(new Date(avgTime * 1000)).format('mm分:ss秒');
 
     return (
         <div className={styles.standardList}>
+            <Button>开始</Button>
             <Card bordered={false}>
                 <Row>
                     <Col sm={6} xs={24}>
-                        <Info title="待办" value={`${runningNum}个任务`} bordered />
+                        <Info title="队列中" value={`${inqueueNum}个任务`} bordered />
                     </Col>
                     <Col sm={6} xs={24}>
-                        <Info title="处理中" value={`${inqueueNum}个任务`} bordered />
+                        <Info title="处理中" value={`${runningNum}个任务`} bordered />
                     </Col>
                     <Col sm={6} xs={24}>
                         <Info title="已完成" value={`${finishNum}个任务`} bordered />
                     </Col>
                     <Col sm={6} xs={24}>
-                        <Info title="平均处理时间" value="32分钟" bordered />
+                        <Info title="平均处理时间" value={avgStr} bordered />
                     </Col>
                 </Row>
             </Card>
@@ -115,7 +135,7 @@ const JobStatus: React.FC<{ data: API.JobStatus }> = (props) => {
                 bodyStyle={{ padding: '0 32px 40px 32px' }}
             // extra={extraContent}
             >
-                {renderTaskContent(data.tasks)}
+                {renderTaskList(data.tasks)}
             </Card>
         </div>
     )

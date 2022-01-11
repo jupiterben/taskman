@@ -5,11 +5,13 @@ import { randomBytes } from 'crypto'
 function genTask(num: number) {
   const tasks: API.TaskResult[] = [];
   for (let i = 0; i < num; i++) {
+    const customData = { animFileName: randomBytes(16).toString("hex"), submitter: "binfu" } 
+
     const task: API.TaskResult = {
-      meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: { animFileName: randomBytes(16).toString("hex"), submitter: "binfu" } },
+      meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: JSON.stringify(customData) },
       state: TaskStateEnum.Running,
-      startTime: new Date(),
-      endTime: new Date(),
+      startTime: Date.now(),
+      endTime: Date.now(),
     };
     tasks.push(task);
   }
@@ -27,8 +29,8 @@ function getJobList(req: Request, res: Response, u: string) {
       {
         name: '动画文件生成任务',
         desc: 'job1 desc',
-        updateAt: new Date(),
-        lastRunTime: new Date(),
+        updateAt: Date.now(),
+        lastRunTime: Date.now(),
         tasks: tasks
       }
     ]
