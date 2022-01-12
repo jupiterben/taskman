@@ -1,6 +1,6 @@
-import { AdminBase } from './base';
+import { NodeManager } from './base';
 
-export class WorkerAdmin extends AdminBase {
+export class WorkerAdmin extends NodeManager {
     constructor() {
         super('worker');
     }

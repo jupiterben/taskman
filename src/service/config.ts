@@ -1,9 +1,9 @@
 const ConfigCommon = {
   TASK_QUEUE: 'tm_task_queue',
-  TASK_RESULT_QUEUE: 'tm_task_result_queue',
+  TASK_RESULT_EXPIRES: 1000 * 60 * 60 * 24,
   JOB_STATUS_EXCHANGE: 'tm_job_status_exchange',
   JOB_COMMAND_QUEUE: 'tm_job_command_queue',
-  NODE_HEARTBEAT_QUEUE: 'tm_node_heartbeat_queue',
+  NODE_HEARTBEAT_BROADCAST: 'tm_node_heartbeat_broadcast',
   NODE_HEARTBEAT_INTERVAL: 1000,
   NODE_OFFLINE_TIMEOUT: 5000,
 };

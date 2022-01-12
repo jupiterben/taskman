@@ -41,3 +41,7 @@ build
 yarn.lock
 taskman/taskman/obj
 taskman/taskman/bin/Debug/net5.0/ref
+
+.vs
+obj
+bin

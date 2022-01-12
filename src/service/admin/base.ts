@@ -1,27 +1,34 @@
-import type { BroadCastSender } from '../mq/broadcast';
-import { BroadCastReceiver } from '../mq/broadcast';
 import { Config } from '../config';
 import type { API } from '@/api_types';
 import { NodeState } from '@/api_types';
+import { DirectMessageSender } from '../mq/direct';
+import { v4 } from 'uuid';
+import { BroadCastReceiver } from '../mq/broadcast';
 
-export abstract class AdminBase {
+export type AdminMessage = {
+    messageId: string;
+    command: string;
+    resultQueue: string;
+}
+
+export abstract class NodeManager {
     protected timeout = Config.NODE_OFFLINE_TIMEOUT;
-    protected nodeHeartBeatReceiver?: BroadCastReceiver;
-    protected nodeCommandSender?: BroadCastSender;
-    
+    protected heartBeatListener?: BroadCastReceiver;
+
     private nodeStatus: Map<string, API.NodeStatus> = new Map<string, API.NodeStatus>();
-    adminNodeType: string;
+    readonly nodeType: string;
 
     constructor(nodeType: string) {
-        this.adminNodeType = nodeType;
+        this.nodeType = nodeType;
     }
 
-    async start() {
-        this.nodeHeartBeatReceiver = new BroadCastReceiver();
-        await this.nodeHeartBeatReceiver.run(Config.MQ_SERVER, Config.NODE_HEARTBEAT_QUEUE, this.onNodeHeartBeat.bind(this));
+    start(url: string) {
+        this.heartBeatListener = new BroadCastReceiver(url, Config.NODE_HEARTBEAT_BROADCAST);
+        this.heartBeatListener.run(this.onNodeHeartBeat.bind(this));
     }
     async stop() {
-        await this.nodeHeartBeatReceiver?.close();
+        await this.heartBeatListener?.close();
+        this.heartBeatListener = undefined;
     }
 
     isOnline(itemId: string): boolean {
@@ -40,7 +47,7 @@ export abstract class AdminBase {
 
     onNodeHeartBeat(msg: string): void {
         const obj: Record<string, unknown> = JSON.parse(msg);
-        if (obj.type !== this.adminNodeType) return;
+        if (obj.type !== this.nodeType) return;
         const status: API.NodeStatus = {
             nodeId: obj.nodeId as string,
             desc: obj.desc as string,
@@ -50,6 +57,7 @@ export abstract class AdminBase {
             machineName: obj.machineName as string,
             machineIP: obj.machineIP as string,
             type: obj.type as string,
+            cmdQueue: obj.cmdQueue as string,
             stateDesc: obj.stateDesc as string,
         };
         if (status.state === NodeState.Dead) {
@@ -69,4 +77,19 @@ export abstract class AdminBase {
         invalidNodes.forEach(this.setOffline.bind(this));
         return Array.from(this.nodeStatus.values());
     }
+
+    async sendCommand(nodeId: string, command: string): Promise<any> {
+        const nodeStatus = this.nodeStatus.get(nodeId);
+        if (!nodeStatus) {
+            throw new Error(`node ${nodeId} is offline`);
+        }
+        const sender = new DirectMessageSender(Config.MQ_SERVER, nodeStatus.cmdQueue);
+        const adminMessage: AdminMessage = {
+            messageId: v4(),
+            command,
+            resultQueue: '',
+        }
+        sender.Send(JSON.stringify(adminMessage));
+    }
+
 }

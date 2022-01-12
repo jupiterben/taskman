@@ -2351,6 +2351,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/bluebird-global@^3.5.13":
+  version "3.5.13"
+  resolved "https://registry.yarnpkg.com/@types/bluebird-global/-/bluebird-global-3.5.13.tgz#8fee8f1075501e9b8bb56fc0539753c38ecdc8df"
+  integrity sha512-jmq47VdRYy8KPjXDlJ6zO5Ie+l5j0X2fGdSbfCS3mGdM93MTy50dh/EfltIv/QD15hCYTY+0lm/C0Bou1tPYnQ==
+  dependencies:
+    "@types/bluebird" "*"
+
 "@types/bluebird@*":
   version "3.5.36"
   resolved "https://registry.npmmirror.com/@types/bluebird/download/@types/bluebird-3.5.36.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fbluebird%2Fdownload%2F%40types%2Fbluebird-3.5.36.tgz#00d9301d4dc35c2f6465a8aec634bb533674c652"

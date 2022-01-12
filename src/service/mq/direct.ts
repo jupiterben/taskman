@@ -1,27 +1,24 @@
-import * as ampqlib from 'amqplib';
+import type * as amqplib from 'amqplib';
+import { MQBase } from './base';
 
-class DirectMQBase {
-  conn?: ampqlib.Connection;
-  ch?: ampqlib.Channel;
-  queue?: string;
-  async open(broker: string, queueName: string) {
-    const conn = (this.conn = await ampqlib.connect(broker));
-    const ch = (this.ch = await conn.createChannel());
-    const assertQueue = await ch.assertQueue(queueName, { durable: false });
-    this.queue = assertQueue.queue;
-    return this;
+export class DirectMQBase extends MQBase {
+  queue: Promise<string>;
+  constructor(url: string, queueName: string) {
+    super(url, {});
+    this.queue = this.assertQueue(queueName);
   }
-  async close() {
-    await this.ch?.close();
-    await this.conn?.close();
+  async assertQueue(queueName: string) {
+    const { ch } = await this.channel;
+    const assertQueue = await ch.assertQueue(queueName, { durable: false });
+    return assertQueue.queue;
   }
 }
 
 export class DirectMessageSender extends DirectMQBase {
-  send(msg: string): boolean {
-    const { ch, queue } = this;
-    if (!ch || !queue) return false;
-    const ret = ch.sendToQueue(queue, Buffer.from(msg));
+  async Send(msg: string) {
+    const { ch } = await this.channel;
+    const queue = await this.queue;
+    const ret = ch.publish(queue, '', Buffer.from(msg));
     console.log('Sent %s', msg);
     return ret;
   }
@@ -29,13 +26,13 @@ export class DirectMessageSender extends DirectMQBase {
 
 /// <summary>
 export class DirectMessageReceiver extends DirectMQBase {
-  async run(broker: string, queueName: string, callback: (msg: string) => void) {
+  async Run(callback: (msg: string) => void) {
     try {
-      const { ch, queue } = await this.open(broker, queueName);
-      if (!ch || !queue) return;
+      const { ch } = await this.channel;
+      const queue = await this.queue;
       await ch.consume(
         queue,
-        (msg: ampqlib.ConsumeMessage | null) => {
+        (msg: amqplib.ConsumeMessage | null) => {
           if (!msg) return;
           const content = msg.content.toString();
           console.log('Received %s', content);
@@ -48,3 +45,5 @@ export class DirectMessageReceiver extends DirectMQBase {
     }
   }
 }
+
+

@@ -7,16 +7,17 @@ import { WorkerAdmin } from './admin/worker';
 import { JobAdmin } from './admin/job';
 
 const app = express();
+
 const workerService = new WorkerAdmin();
 const jobService = new JobAdmin();
 
 const server = app.listen(80, async function () {
   try {
     console.log('Starting Job Status Service...');
-    await jobService.start(Config.MQ_SERVER, Config.JOB_STATUS_EXCHANGE);
+    await jobService.start(Config.MQ_SERVER);
 
     console.log('Starting Worker Status Service...');
-    await workerService.start(Config.MQ_SERVER, Config.WORKER_STATE_REPORT_QUEUE);
+    await workerService.start(Config.MQ_SERVER);
   } catch (e) {
     console.log(e);
   }
@@ -34,11 +35,11 @@ app.use(express.static('dist'));
 app.use(cors());
 
 app.get('/api/job', async function (req, res) {
-  const status: API.JobList = { data: jobService.getStatus() };
+  const status: API.NodeList = { data: jobService.getNodeStatus() };
   res.json(status);
 });
 
 app.get('/api/worker', async function (req, res) {
-  const status: API.WorkerList = { data: workerService.getStatus() };
+  const status: API.NodeList = { data: workerService.getNodeStatus() };
   res.json(status);
 });

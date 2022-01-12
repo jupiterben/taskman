@@ -1,6 +1,7 @@
 import { API, TaskStateEnum } from '../src/api_types';
 import { Request, Response } from 'express';
 import { randomBytes } from 'crypto'
+import { v4 } from 'uuid';
 
 function genTask(num: number) {
   const tasks: API.TaskResult[] = [];
@@ -8,7 +9,7 @@ function genTask(num: number) {
     const customData = { animFileName: randomBytes(16).toString("hex"), submitter: "binfu" } 
 
     const task: API.TaskResult = {
-      meta: { uuid: '1', name: 'task1', args: ['1', '2'], customData: JSON.stringify(customData) },
+      meta: { uuid: v4(), name: 'task1', args: ['1', '2'], customData: JSON.stringify(customData) },
       state: TaskStateEnum.Running,
       startTime: Date.now(),
       endTime: Date.now(),

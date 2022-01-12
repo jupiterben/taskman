@@ -66,6 +66,7 @@ export declare namespace API {
     nodeId: string;
     type: string;
     desc: string;
+    cmdQueue: string;
     machineName: string;
     machineIP: string;
     state: NodeState;
