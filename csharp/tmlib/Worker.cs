@@ -1,4 +1,3 @@
-using AniTaskCommon;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,9 +6,9 @@ using System.Diagnostics;
 using System;
 
 
-namespace AniTaskCommon
+namespace AniTask
 {
-    public class Worker : AniNode
+    public class Worker : MQNode
     {
         BroadcastSender taskResultSender;
         WorkQueueConsumer taskConsumer;

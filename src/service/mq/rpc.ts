@@ -1,43 +1,52 @@
 import { MQBase } from './base';
 import type * as amqplib from 'amqplib';
 import { v4 } from 'uuid';
-import { sleep } from '../imp/util';
 
-export class RPCServer extends MQBase {
+export async function EchoHandler(msg: string) {
+    return msg;
+}
+
+class RPCBase extends MQBase {
+    async assertServerQueue(queueName: string) {
+        return await this.assertQueue(queueName, { durable: false })
+    }
+
+    async assertClientQueue() {
+        return await this.assertQueue('', { exclusive: true });
+    }
+}
+
+
+export class RPCServer extends RPCBase {
     queue: Promise<{ ch: amqplib.Channel, queue: string }>;
-    constructor(url: string) {
+    handler: (msg: string) => Promise<string>;
+    constructor(url: string, handler = EchoHandler) {
         super(url);
-        this.queue = this.assertQueue('rpc_' + v4(), { durable: false });
+        this.handler = handler;
+        this.queue = this.assertServerQueue('rpc_' + v4());
         this.run();
     }
 
     private async run() {
         const { ch, queue } = await this.queue;
         await ch.prefetch(1);
-        await ch.consume(queue, async (msg: amqplib.ConsumeMessage | null) => {
+        ch.consume(queue, async (msg: amqplib.ConsumeMessage | null) => {
             if (!msg) return;
-            console.log(msg);
-            const result = await this.handlerCall(msg.content.toString());
-            const { replyTo, correlationId } = msg.properties;
-            ch.sendToQueue(replyTo, Buffer.from(result), { correlationId });
             ch.ack(msg);
+            const { replyTo, correlationId } = msg.properties;
+            const result = await this.handler(msg.content.toString());
+            ch.sendToQueue(replyTo, Buffer.from(result), { correlationId });
         });
-    }
-
-    async handlerCall(msg: string) {
-        await sleep(3000);
-        return msg;
     }
 }
 
 
-export class RPCClient extends MQBase {
+export class RPCClient extends RPCBase {
     resultQueue: Promise<{ ch: amqplib.Channel, queue: string }>;
-    //consumer: Promise<amqplib.ConsumeMessage>;
     resolveMap = new Map<string, (result: string) => void>();
     constructor(url: string) {
         super(url);
-        this.resultQueue = this.assertQueue('', { exclusive: true });
+        this.resultQueue = this.assertClientQueue();
         this.run();
     }
 
@@ -45,12 +54,10 @@ export class RPCClient extends MQBase {
         const { ch, queue } = await this.resultQueue;
         ch.consume(queue, (msg: amqplib.ConsumeMessage | null) => {
             if (!msg) return;
-            console.log(msg);
             const resolve = this.resolveMap.get(msg.properties.correlationId);
-            resolve && resolve(msg.content.toString());
+            if (resolve) resolve(msg.content.toString());
             this.resolveMap.delete(msg.properties.correlationId);
-        }, {});
-
+        });
     }
 
     private getResult(correlateId: string, timeout: number = 100000) {
@@ -58,22 +65,18 @@ export class RPCClient extends MQBase {
             const timeoutId = setTimeout(() => {
                 reject(new Error('timeout'));
             }, timeout);
-            this.resolveMap.set(correlateId, resolve);
-
-            // return this.consumer.then((msg: amqplib.ConsumeMessage) => {
-            //     if (msg.properties.correlationId === correlateId) {
-            //         resolve(msg.content.toString());
-            //         clearTimeout(timeoutId);
-            //     }
-            // });
+            this.resolveMap.set(correlateId, (msg: string) => {
+                resolve(msg);
+                clearTimeout(timeoutId);
+            });
         });
     }
 
-    async call(msg: string, sQueue: string): Promise<any> {
+    async call(msg: string, sQueueName: string): Promise<any> {
         const { queue, ch } = await this.resultQueue;
-        const sQueueAssert = await ch.assertQueue(sQueue, { durable: false });
+        const sQueue = (await this.assertServerQueue(sQueueName)).queue;
         const correlationId = v4();
-        await ch.sendToQueue(sQueueAssert.queue, Buffer.from(msg), { correlationId, replyTo: queue });
+        await ch.sendToQueue(sQueue, Buffer.from(msg), { correlationId, replyTo: queue });
         return await this.getResult(correlationId);
     }
 }

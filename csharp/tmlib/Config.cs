@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AniTaskCommon
+namespace AniTask
 {
     public static class Config
     {

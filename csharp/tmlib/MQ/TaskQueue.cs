@@ -42,7 +42,6 @@ namespace AniTask.MQ
         }
         public TaskSender(string url, string queue):base(url, queue)
         {
-
         }
 
         public bool Send(string message)

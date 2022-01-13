@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace taskman
+namespace worker
 {
     class Program
     {

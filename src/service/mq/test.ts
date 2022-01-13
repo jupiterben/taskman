@@ -19,12 +19,11 @@ async function testRPC() {
 
     const sQueue = (await rpcServer.queue).queue;
 
-    for (var i = 0; i < 10; i++) {
-        await rpcClient.call(`helle ${i}`, sQueue).then(result => {
-            console.log(result);
-        });
-    }
-
+    await Promise.all([...Array(5).keys()].map(async (i) => {
+        const msg = JSON.stringify({ delay: (5-i) * 1000 });
+        const result = await rpcClient.call(msg, sQueue);
+        console.log(result);
+    }));
 
     await rpcServer.close();
     await rpcClient.close();

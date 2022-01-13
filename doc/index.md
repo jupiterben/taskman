@@ -11,7 +11,7 @@
 ## 一些开源方案
 
 
-
+https://www.rabbitmq.com/dotnet-api-guide.html#consuming-async
 
 ## 需要解决的问题
 

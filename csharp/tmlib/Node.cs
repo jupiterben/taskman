@@ -25,7 +25,7 @@ namespace AniTask
         public double createdAt;  //utc timestamp in seconds
     }
 
-    public abstract class AniNode
+    public abstract class MQNode
     {
         public readonly string uuid;
         private BroadcastSender heartBeatChannel;
@@ -35,7 +35,7 @@ namespace AniTask
         protected NodeState state = NodeState.Idle;
         protected string stateDesc = "";
 
-        public AniNode()
+        public MQNode()
         {
             this.uuid = Utils.GenId();
             this.createdAt = DateTime.Now;

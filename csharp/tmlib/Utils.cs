@@ -18,7 +18,7 @@ namespace AniTask
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds((long)(s * 1000));
             return dateTimeOffset.DateTime;
         }
-        public static string GenId()
+        public static string GUID()
         {
             return System.Guid.NewGuid().ToString();
         }
