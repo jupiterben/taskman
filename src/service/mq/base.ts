@@ -10,9 +10,9 @@ export class MQBase {
     async assertQueue(queueName: string, opts: amqplib.Options.AssertQueue | undefined) {
         const { ch } = await this.channel;
         const assertQueue = await ch.assertQueue(queueName, opts);
-        return assertQueue.queue;
+        return { ch, queue: assertQueue.queue };
     }
-    
+
     protected async open(url: string, opts: any) {
         const conn = await amqplib.connect(url, opts);
         const ch = await conn.createChannel();

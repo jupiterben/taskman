@@ -3,22 +3,16 @@ import { Config } from '../config';
 import { MQBase } from './base';
 
 class TaskMQBase extends MQBase {
-  queue: Promise<string>;
+  queue: Promise<{ ch: amqplib.Channel, queue: string }>;
   constructor(url: string, queueName: string) {
     super(url, {});
-    this.queue = this.assertQueue(queueName);
-  }
-  async assertQueue(queueName: string) {
-    const { ch } = await this.channel;
-    const assertQueue = await ch.assertQueue(queueName, { durable: true });
-    return assertQueue.queue;
+    this.queue = this.assertQueue(queueName, { durable: true });
   }
 }
 
 export class TaskSender extends TaskMQBase {
   async Send(msg: string) {
-    const { ch } = await this.channel;
-    const queue = await this.queue;
+    const { ch, queue } = await this.queue;
     const ret = ch.sendToQueue(queue, Buffer.from(msg), { deliveryMode: true });
     console.log('Sent %s', msg);
     return ret;
@@ -28,8 +22,7 @@ export class TaskSender extends TaskMQBase {
 export class TaskReceiver extends TaskMQBase {
   async Run(callback: (msg: string) => boolean) {
     try {
-      const { ch } = await this.channel;
-      const queue = await this.queue;
+      const { ch, queue } = await this.queue;
       await ch.prefetch(1);
       await ch.consume(queue,
         (msg: amqplib.ConsumeMessage | null) => {
@@ -81,7 +74,7 @@ export class TaskResultBackEnd extends MQBase {
       let timeoutId: NodeJS.Timeout;
       if (timeout) {
         timeoutId = setTimeout(() => {
-          resolve();
+          reject(new Error("timeout"));
         }, timeout);
       }
       const consume = await ch.consume(queue, (msg: amqplib.ConsumeMessage | null) => {

@@ -70,7 +70,7 @@ namespace AniTask.MQ
                               exchange: this.exchange,
                               routingKey: "");
 
-            var consumer = new EventingBasicConsumer(this.ch);
+            var consumer = new EventingBasicConsumer(ch);
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body.ToArray();

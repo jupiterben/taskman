@@ -2,22 +2,16 @@ import type * as amqplib from 'amqplib';
 import { MQBase } from './base';
 
 export class DirectMQBase extends MQBase {
-  queue: Promise<string>;
+  queue: Promise<{ ch: amqplib.Channel, queue: string }>;
   constructor(url: string, queueName: string) {
     super(url, {});
-    this.queue = this.assertQueue(queueName);
-  }
-  async assertQueue(queueName: string) {
-    const { ch } = await this.channel;
-    const assertQueue = await ch.assertQueue(queueName, { durable: false });
-    return assertQueue.queue;
+    this.queue = this.assertQueue(queueName, { durable: false });
   }
 }
 
-export class DirectMessageSender extends DirectMQBase {
+export class DirectSender extends DirectMQBase {
   async Send(msg: string) {
-    const { ch } = await this.channel;
-    const queue = await this.queue;
+    const { ch, queue } = await this.queue;
     const ret = ch.publish(queue, '', Buffer.from(msg));
     console.log('Sent %s', msg);
     return ret;
@@ -25,11 +19,10 @@ export class DirectMessageSender extends DirectMQBase {
 }
 
 /// <summary>
-export class DirectMessageReceiver extends DirectMQBase {
+export class DirectReceiver extends DirectMQBase {
   async Run(callback: (msg: string) => void) {
     try {
-      const { ch } = await this.channel;
-      const queue = await this.queue;
+      const { ch, queue } = await this.queue;
       await ch.consume(
         queue,
         (msg: amqplib.ConsumeMessage | null) => {

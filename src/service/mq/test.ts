@@ -16,12 +16,18 @@ import { RPCClient, RPCServer } from './rpc';
 async function testRPC() {
     const rpcClient = new RPCClient(Config.MQ_SERVER);
     const rpcServer = new RPCServer(Config.MQ_SERVER);
-    rpcServer.run();
 
-    const sQueue = await rpcServer.queue;
-    const result = await rpcClient.call("helle", sQueue);
-    console.log(result);
+    const sQueue = (await rpcServer.queue).queue;
 
+    for (var i = 0; i < 10; i++) {
+        await rpcClient.call(`helle ${i}`, sQueue).then(result => {
+            console.log(result);
+        });
+    }
+
+
+    await rpcServer.close();
+    await rpcClient.close();
 }
 
 testRPC();

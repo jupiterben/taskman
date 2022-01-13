@@ -1,7 +1,7 @@
 import { Config } from '../config';
 import type { API } from '@/api_types';
 import { NodeState } from '@/api_types';
-import { DirectMessageSender } from '../mq/direct';
+import { DirectSender } from '../mq/direct';
 import { v4 } from 'uuid';
 import { BroadCastReceiver } from '../mq/broadcast';
 
@@ -83,7 +83,7 @@ export abstract class NodeManager {
         if (!nodeStatus) {
             throw new Error(`node ${nodeId} is offline`);
         }
-        const sender = new DirectMessageSender(Config.MQ_SERVER, nodeStatus.cmdQueue);
+        const sender = new DirectSender(Config.MQ_SERVER, nodeStatus.cmdQueue);
         const adminMessage: AdminMessage = {
             messageId: v4(),
             command,

@@ -12,7 +12,7 @@ namespace AniTask
         Dead,
     }
 
-    class AniNodeStatus
+    class NodeStatus
     {
         public string nodeId;
         public string type;
