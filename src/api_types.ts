@@ -21,6 +21,11 @@ export enum NodeState {
   Dead,
 }
 
+export enum NodeType {
+  Worker = "Worker",
+  Job = "Job",
+}
+
 export declare namespace API {
   type PageParams = {
     current?: number;
@@ -66,7 +71,7 @@ export declare namespace API {
     nodeId: string;
     type: string;
     desc: string;
-    cmdQueue: string;
+    rpcQueue: string;
     machineName: string;
     machineIP: string;
     state: NodeState;

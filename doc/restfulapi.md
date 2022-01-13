@@ -1,0 +1,1 @@
+https://docs.microsoft.com/zh-cn/azure/architecture/best-practices/api-design

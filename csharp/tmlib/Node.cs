@@ -37,18 +37,19 @@ namespace AniTask
 
         public MQNode()
         {
-            this.uuid = Utils.GenId();
+            this.uuid = Utils.GUID();
             this.createdAt = DateTime.Now;
         }
 
         public abstract string GetNodeType();
         public virtual string GetDesc() { return ""; }
 
-        protected void Start(string statusQueue)
+        public virtual void Start()
         {
             this.heartBeatChannel = new BroadcastSender(Config.MQ_SERVER, Config.NODE_HEARTBEAT_CHANNEL);
             this.heartBeatTimer = Interval.Set(() => { ReportStatus(); }, Config.NODE_HEARTBEAT_INTERVAL);
-            this.rpcServer = new RPCServer();
+            this.rpcServer = new RPCServer(Config.MQ_SERVER);
+            this.rpcServer.Run(OnRPCCall);
         }
         public virtual void Stop()
         {
@@ -57,22 +58,25 @@ namespace AniTask
             this.heartBeatTimer = null;
             this.heartBeatChannel?.Close();
             this.heartBeatChannel = null;
+            this.rpcServer?.Close();
+            this.rpcServer = null;
         }
 
         public void UpdateStatus(NodeState state, string stateDesc = "", bool report = true)
         {
             this.state = state;
             this.stateDesc = stateDesc;
-            if(report)ReportStatus();
+            if (report) ReportStatus();
         }
 
         protected void ReportStatus()
         {
-            var status = new AniNodeStatus
+            var status = new NodeStatus
             {
                 nodeId = this.uuid,
                 desc = this.GetDesc(),
                 type = GetNodeType(),
+                rpcQueue = this.rpcServer.queue,
                 machineName = Environment.MachineName,
                 machineIP = Utils.GetLocalIP(),
                 state = this.state,
@@ -81,6 +85,11 @@ namespace AniTask
             };
             var msg = JsonConvert.SerializeObject(status);
             this.heartBeatChannel.Send(msg);
+        }
+
+        protected string OnRPCCall(string msg)
+        {
+            return msg;
         }
     }
 }

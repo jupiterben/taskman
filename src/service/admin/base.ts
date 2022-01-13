@@ -1,9 +1,8 @@
 import { Config } from '../config';
-import type { API } from '@/api_types';
-import { NodeState } from '@/api_types';
-import { DirectSender } from '../mq/direct';
-import { v4 } from 'uuid';
+import type { API } from '../../api_types';
+import { NodeState } from '../../api_types';
 import { BroadCastReceiver } from '../mq/broadcast';
+import { RPCClient } from '../mq/rpc';
 
 export type AdminMessage = {
     messageId: string;
@@ -12,29 +11,31 @@ export type AdminMessage = {
 }
 
 export abstract class NodeManager {
-    protected timeout = Config.NODE_OFFLINE_TIMEOUT;
-    protected heartBeatListener?: BroadCastReceiver;
-
     private nodeStatus: Map<string, API.NodeStatus> = new Map<string, API.NodeStatus>();
     readonly nodeType: string;
+    protected heartBeatListener?: BroadCastReceiver;
+    protected rpcClient?: RPCClient;
 
     constructor(nodeType: string) {
         this.nodeType = nodeType;
     }
 
     start(url: string) {
-        this.heartBeatListener = new BroadCastReceiver(url, Config.NODE_HEARTBEAT_BROADCAST);
+        this.heartBeatListener = new BroadCastReceiver(url, Config.NODE_HEARTBEAT_CHANNEL);
         this.heartBeatListener.run(this.onNodeHeartBeat.bind(this));
+        this.rpcClient = new RPCClient(url);
     }
     async stop() {
         await this.heartBeatListener?.close();
         this.heartBeatListener = undefined;
+        await this.rpcClient?.close();
+        this.rpcClient = undefined;
     }
 
     isOnline(itemId: string): boolean {
         if (this.nodeStatus.has(itemId)) {
             const status = this.nodeStatus.get(itemId);
-            if (status && (Date.now() - status.updateAt) < this.timeout) {
+            if (status && (Date.now() - status.updateAt) < Config.NODE_OFFLINE_TIMEOUT) {
                 return true;
             }
         }
@@ -57,7 +58,7 @@ export abstract class NodeManager {
             machineName: obj.machineName as string,
             machineIP: obj.machineIP as string,
             type: obj.type as string,
-            cmdQueue: obj.cmdQueue as string,
+            rpcQueue: obj.rpcQueue as string,
             stateDesc: obj.stateDesc as string,
         };
         if (status.state === NodeState.Dead) {
@@ -77,19 +78,4 @@ export abstract class NodeManager {
         invalidNodes.forEach(this.setOffline.bind(this));
         return Array.from(this.nodeStatus.values());
     }
-
-    async sendCommand(nodeId: string, command: string): Promise<any> {
-        const nodeStatus = this.nodeStatus.get(nodeId);
-        if (!nodeStatus) {
-            throw new Error(`node ${nodeId} is offline`);
-        }
-        const sender = new DirectSender(Config.MQ_SERVER, nodeStatus.cmdQueue);
-        const adminMessage: AdminMessage = {
-            messageId: v4(),
-            command,
-            resultQueue: '',
-        }
-        sender.Send(JSON.stringify(adminMessage));
-    }
-
 }

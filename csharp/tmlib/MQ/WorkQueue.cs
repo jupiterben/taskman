@@ -9,14 +9,14 @@ using System.Threading;
 
 namespace AniTask.MQ
 {
-    public class TaskMQBase : MQBase
+    public class WorkMQBase : MQBase
     {
         protected string queue;
-        public TaskMQBase(string url, string queue): base(url)
+        public WorkMQBase(string url, string queue): base(url)
         {
             this.queue = queue;
         }
-        public TaskMQBase(MQConnection conn, string queue):base(conn)
+        public WorkMQBase(MQConnection conn, string queue):base(conn)
         {
             this.queue = queue;
         }
@@ -35,12 +35,12 @@ namespace AniTask.MQ
         }
     }
 
-    public class TaskSender : TaskMQBase
+    public class WorkSender : WorkMQBase
     {
-        public TaskSender(MQConnection conn, string queue) : base(conn, queue)
+        public WorkSender(MQConnection conn, string queue) : base(conn, queue)
         {
         }
-        public TaskSender(string url, string queue):base(url, queue)
+        public WorkSender(string url, string queue):base(url, queue)
         {
         }
 
@@ -63,14 +63,13 @@ namespace AniTask.MQ
         }
     }
 
-    public class TaskReceicer : TaskMQBase
+    public class WorkConsumer : WorkMQBase
     {
-        public TaskReceicer(MQConnection conn, string queue) : base(conn, queue)
+        public WorkConsumer(MQConnection conn, string queue) : base(conn, queue)
         {
         }
-        public TaskReceicer(string url, string queue):base(url, queue)
+        public WorkConsumer(string url, string queue):base(url, queue)
         {
-
         }
 
         public delegate bool MessageBackDelegate(string url);

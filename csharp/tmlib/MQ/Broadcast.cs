@@ -51,12 +51,12 @@ namespace AniTask.MQ
         }
     }
 
-    public class BroadcastRecevier : BroadcastMQBase
+    public class BroadcastReceiver : BroadcastMQBase
     {
-        public BroadcastRecevier(MQConnection conn, string exchange) : base(conn, exchange)
+        public BroadcastReceiver(MQConnection conn, string exchange) : base(conn, exchange)
         {
         }
-        public BroadcastRecevier(string url, string exchange) : base(url, exchange)
+        public BroadcastReceiver(string url, string exchange) : base(url, exchange)
         {
         }
 

@@ -1,3 +1,4 @@
+using AniTask;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -173,15 +174,12 @@ namespace CommonUtils
             }
         }
 
-        DispatcherTimer timer;
+        System.Timers.Timer timer;
         TaskDelayData delayData;
 
         private TaskManager()
         {
-            timer = new DispatcherTimer();
-            timer.Tick += Update;
-            timer.Interval = TimeSpan.FromMilliseconds(2);
-            timer.Start();
+            timer = Interval.Set(()=> { this.Update(null, null); }, TimeSpan.FromMilliseconds(2));
         }
 
         Queue<TaskBase> taskQueue = new Queue<TaskBase>();
@@ -192,7 +190,7 @@ namespace CommonUtils
         {
             if(delayData != null)
             {
-                timer.Interval = TimeSpan.FromMilliseconds(2);
+                timer.Interval = 2.0;
                 delayData = null;
             }
 
@@ -238,12 +236,12 @@ namespace CommonUtils
                             taskFinish = true;
                             taskFinishData = taskStateData.content as TaskFinishData;
                         }
-                        if(taskStateData.state == TaskState.Delay)
-                        {
-                            delayData = taskStateData.content as TaskDelayData;
-                            timer.Interval = delayData.DelayTime;
-                            return;
-                        }
+                        // if(taskStateData.state == TaskState.Delay)
+                        // {
+                        //     delayData = taskStateData.content as TaskDelayData;
+                        //     timer.Interval = delayData.DelayTime;
+                        //     return;
+                        // }
                     }
                 }
                 else
@@ -254,9 +252,9 @@ namespace CommonUtils
                     taskFinishData = TaskFinishData.Success;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ExceptionHelper.Catch(ex);
+                //ExceptionHelper.Catch(ex);
             }
             finally
             {

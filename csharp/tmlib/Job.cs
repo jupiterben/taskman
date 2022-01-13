@@ -1,3 +1,5 @@
+using AniTask.MQ;
+using CommonUtils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,29 +21,29 @@ namespace AniTask
         public string name;
     }
 
-    public abstract class JobNode : AniNode
+    public abstract class JobNode : MQNode
     {
-        protected WorkQueuePublisher taskSender;
-        protected BroadcastReceiver taskResultReceiver;
-        protected BroadcastReceiver adminCmdReceiver;
-        public string name { get; } //instance id;
-
+        protected WorkSender taskSender;
+        protected BroadcastReceiver resultReceiver;
         Dictionary<string, TaskStatusObj> taskList = new Dictionary<string, TaskStatusObj>();
+        public string name { get; } //instance id;
 
         protected JobNode(string name)
         {
             this.name = name;
         }
 
-        public void Start()
+        public override string GetNodeType()
         {
-            base.Start(Config.JOB_STATUS_EXCHANGE);
-            this.taskSender = new WorkQueuePublisher();
-            this.taskSender.Open(Config.MQ_SERVER, Config.TASK_QUEUE);
-            this.taskResultReceiver = new BroadcastReceiver();
-            this.adminCmdReceiver = new BroadcastReceiver();
-            this.taskResultReceiver.Run(Config.MQ_SERVER, Config.TASK_RESULT_QUEUE, TaskResultMessage);
-            this.adminCmdReceiver.Run(Config.MQ_SERVER, Config.JOB_COMMAND_QUEUE, CommandMessage);
+            return "Job";
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            this.taskSender = new WorkSender(Config.MQ_SERVER, Config.TASK_QUEUE);
+            this.resultReceiver = new BroadcastReceiver(Config.MQ_SERVER, Config.TASK_RESULT_QUEUE);
+            this.resultReceiver.Run(this.TaskResultMessage);
         }
 
         public override void Stop()
@@ -49,8 +51,6 @@ namespace AniTask
             base.Stop();
             this.taskSender?.Close();
             this.taskSender = null;
-            this.taskResultReceiver?.Close();
-            this.taskResultReceiver = null;
         }
 
         protected void StartTask(TaskMeta meta)
@@ -67,16 +67,6 @@ namespace AniTask
             var taskResult = JsonConvert.DeserializeObject<TaskResultObj>(result);
             OnTaskResult(taskResult);
         }
-        public void CommandMessage(string cmd)
-        {
-            var command = JsonConvert.DeserializeObject<Command>(cmd);
-            OnCommand(command);
-        }
-
-        public virtual void OnCommand(Command cmd)
-        {
-
-        }
 
         protected virtual void OnTaskResult(TaskResultObj result)
         {
@@ -86,19 +76,5 @@ namespace AniTask
                 status.UpdateState(result.GetStateData());
             }
         }
-
-//         protected override void ReportStatus()
-//         {
-//             var status = new JobStatus
-//             {
-//                 name = this.name,
-//                 state = this.status,
-//                 updateAt = Utils.Now(),
-//                 desc = this.statusDesc,
-//                 tasks = this.taskList.Values.ToList(),
-//             };
-//             var msg = JsonConvert.SerializeObject(status);
-//             this.SendReport(msg);
-//         }
     }
 }

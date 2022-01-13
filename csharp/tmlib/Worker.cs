@@ -1,36 +1,33 @@
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System;
-
+using CommonUtils;
+using AniTask.MQ;
 
 namespace AniTask
 {
     public class Worker : MQNode
     {
-        BroadcastSender taskResultSender;
-        WorkQueueConsumer taskConsumer;
+        WorkConsumer taskConsumer;
+        BroadcastSender resultSender;
 
         public delegate IEnumerable<TaskStateData> TaskHandler(List<string> args);
         Dictionary<string, TaskHandler> taskHandlers = new Dictionary<string, TaskHandler>();
 
-        public void Start()
+        public override void Start()
         {
-            base.Start(Config.WORKER_STATE_REPORT_QUEUE);
-            this.taskResultSender = new BroadcastSender();
-            this.taskConsumer = new WorkQueueConsumer();
-
-            this.taskResultSender.Open(Config.MQ_SERVER, Config.TASK_RESULT_QUEUE);
-            this.taskConsumer.Run(Config.MQ_SERVER, Config.TASK_QUEUE, OnTaskMessage);
-            this.startTime = DateTime.Now;
-            this.UpdateStatus(NodeState.Idle);
+            base.Start();
+            this.taskConsumer = new WorkConsumer(Config.MQ_SERVER, Config.TASK_QUEUE);
+            this.taskConsumer.Run(OnTaskMessage);
+            this.resultSender = new BroadcastSender(Config.MQ_SERVER, Config.TASK_RESULT_QUEUE);
         }
 
-        public bool IsStarted()
+        public override void Stop()
         {
-            return taskResultSender != null && taskConsumer != null;
+            base.Stop();
+            this.taskConsumer?.Close();
+            this.taskConsumer = null;
+            this.resultSender?.Close();
+            this.resultSender = null;
         }
 
         bool OnTaskMessage(string msg)
@@ -40,13 +37,10 @@ namespace AniTask
             {
                 var handler = this.taskHandlers.GetValueOrDefault(taskMeta.name, null);
                 if (handler == null) return false;
-
-                this.UpdateStatus(NodeState.Busy, string.Format("Run Task {0}", taskMeta.uuid));
                 foreach (var res in handler.Invoke(taskMeta.args))
                 {
                     this.SendTaskResult(taskMeta, res);
                 }
-                this.UpdateStatus(NodeState.Idle);
             }
             return true;
         }
@@ -61,7 +55,7 @@ namespace AniTask
             var taskResult = new TaskResultObj() { meta = task };
             taskResult.SetStateData(state);
             string content = JsonConvert.SerializeObject(taskResult);
-            this.taskResultSender.Send(content);
+            this.resultSender.Send(content);
         }
 
         public void Register(string taskName, TaskHandler handler)
@@ -69,13 +63,6 @@ namespace AniTask
             this.taskHandlers.Add(taskName, handler);
         }
 
-        public override void Stop()
-        {
-            base.Stop();
-            this.taskResultSender.Close();
-            this.taskResultSender = null;
-            this.taskConsumer.Close();
-            this.taskConsumer = null;
-        }
+        
     }
 }

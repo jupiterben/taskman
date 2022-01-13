@@ -3,7 +3,7 @@ import type * as amqplib from 'amqplib';
 import { v4 } from 'uuid';
 
 export async function EchoHandler(msg: string) {
-    return msg;
+    return "Echo:" + msg;
 }
 
 class RPCBase extends MQBase {
@@ -15,7 +15,6 @@ class RPCBase extends MQBase {
         return await this.assertQueue('', { exclusive: true });
     }
 }
-
 
 export class RPCServer extends RPCBase {
     queue: Promise<{ ch: amqplib.Channel, queue: string }>;
@@ -40,7 +39,6 @@ export class RPCServer extends RPCBase {
     }
 }
 
-
 export class RPCClient extends RPCBase {
     resultQueue: Promise<{ ch: amqplib.Channel, queue: string }>;
     resolveMap = new Map<string, (result: string) => void>();
@@ -60,23 +58,23 @@ export class RPCClient extends RPCBase {
         });
     }
 
-    private getResult(correlateId: string, timeout: number = 100000) {
+    private getResult(correlateId: string, timeout?: number) {
         return new Promise<string>((resolve, reject) => {
-            const timeoutId = setTimeout(() => {
+            const timeoutId = timeout ? setTimeout(() => {
                 reject(new Error('timeout'));
-            }, timeout);
+            }, timeout) : undefined;
             this.resolveMap.set(correlateId, (msg: string) => {
                 resolve(msg);
-                clearTimeout(timeoutId);
+                if (timeoutId) clearTimeout(timeoutId);
             });
         });
     }
 
-    async call(msg: string, sQueueName: string): Promise<any> {
+    async call(msg: string, sQueueName: string, timeout?: number): Promise<any> {
         const { queue, ch } = await this.resultQueue;
         const sQueue = (await this.assertServerQueue(sQueueName)).queue;
         const correlationId = v4();
         await ch.sendToQueue(sQueue, Buffer.from(msg), { correlationId, replyTo: queue });
-        return await this.getResult(correlationId);
+        return await this.getResult(correlationId, timeout);
     }
 }

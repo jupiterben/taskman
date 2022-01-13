@@ -36,5 +36,5 @@ function getWorkerList(req: Request, res: Response, u: string) {
 }
 
 export default {
-    'GET /api/worker': getWorkerList,
+    'GET /api/workers': getWorkerList,
 };

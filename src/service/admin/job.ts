@@ -1,4 +1,4 @@
-import type { DirectSender } from '../mq/direct';
+import { NodeType } from '../../api_types';
 import { NodeManager } from './base';
 
 // function ToTaskResult(obj: Record<string, unknown>): API.TaskResult {
@@ -14,10 +14,8 @@ import { NodeManager } from './base';
 // }
 
 export class JobAdmin extends NodeManager {
-    cmdMessageQueue?: DirectSender;
-
     constructor() {
-        super('JobScheduler');
+        super(NodeType.Job);
     }
     
 }

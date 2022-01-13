@@ -40,6 +40,6 @@ function getJobList(req: Request, res: Response, u: string) {
 }
 
 export default {
-  'GET /api/job': getJobList,
+  'GET /api/jobs': getJobList,
 };
 

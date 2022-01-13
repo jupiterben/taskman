@@ -4,8 +4,8 @@ import { request } from 'umi';
 import type { API } from '@/api_types';
 
 /** 获取任务列表 GET /api/task */
-export async function GetJob(params?: API.PageParams, options?: { [key: string]: any }) {
-  return request<API.JobList>('/api/job', {
+export async function GetJobs(params?: API.PageParams, options?: { [key: string]: any }) {
+  return request<API.JobList>('/api/jobs', {
     method: 'GET',
     params: {
       ...params,
@@ -14,8 +14,8 @@ export async function GetJob(params?: API.PageParams, options?: { [key: string]:
   });
 }
 
-export async function GetWorker() {
-  return request<API.WorkerList>('/api/worker', {
+export async function GetWorkers() {
+  return request<API.NodeList>('/api/workers', {
     method: 'GET',
   });
 }

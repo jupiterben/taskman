@@ -34,12 +34,12 @@ process.once('SIGINT', async function () {
 app.use(express.static('dist'));
 app.use(cors());
 
-app.get('/api/job', async function (req, res) {
+app.get('/api/jobs', async function (req, res) {
   const status: API.NodeList = { data: jobService.getNodeStatus() };
   res.json(status);
 });
 
-app.get('/api/worker', async function (req, res) {
+app.get('/api/workers', async function (req, res) {
   const status: API.NodeList = { data: workerService.getNodeStatus() };
   res.json(status);
 });

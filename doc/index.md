@@ -16,3 +16,6 @@ https://www.rabbitmq.com/dotnet-api-guide.html#consuming-async
 ## 需要解决的问题
 
 1. Max中worker
+
+
+https://docs.microsoft.com/zh-cn/azure/architecture/best-practices/api-design
