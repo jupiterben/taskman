@@ -30,7 +30,7 @@ namespace AniTask
         public static TimeSpan NODE_HEARTBEAT_INTERVAL = TimeSpan.FromMilliseconds(1000);
         public static TimeSpan NODE_OFFLINE_TIMEOUT = TimeSpan.FromMilliseconds(5000);
 
-        public static string TEMP_WORKING_ROOTFOLDER = @"\\hk4e_shotgunutil\utils\temp\aniTaskTemp";
-        public static string TASK_INFO_FILE = "taskinfo";
+        // public static string TEMP_WORKING_ROOTFOLDER = @"\\hk4e_shotgunutil\utils\temp\aniTaskTemp";
+        // public static string TASK_INFO_FILE = "taskinfo";
     }
 }
