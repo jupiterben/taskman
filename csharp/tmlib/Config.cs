@@ -14,7 +14,7 @@ namespace AniTask
             get
             {
                 var data = Environment.GetEnvironmentVariables();
-                if (data["USERDOMAIN"].Equals("MIHOYO"))
+                if (data.Contains("USERDOMAIN") && data["USERDOMAIN"].Equals("MIHOYO"))
                 {
                     return "amqp://bin.fu:bin.fu@10.12.11.48:5672/anitask";
                 }

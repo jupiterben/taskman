@@ -46,10 +46,10 @@ namespace AniTask
 
         public virtual void Start()
         {
-            this.heartBeatChannel = new BroadcastSender(Config.MQ_SERVER, Config.NODE_HEARTBEAT_CHANNEL);
-            this.heartBeatTimer = Interval.Set(() => { ReportStatus(); }, Config.NODE_HEARTBEAT_INTERVAL);
             this.rpcServer = new RPCServer(Config.MQ_SERVER);
             this.rpcServer.Run(OnRPCCall);
+            this.heartBeatChannel = new BroadcastSender(Config.MQ_SERVER, Config.NODE_HEARTBEAT_CHANNEL);
+            this.heartBeatTimer = Interval.Set(() => { ReportStatus(); }, Config.NODE_HEARTBEAT_INTERVAL);
         }
         public virtual void Stop()
         {

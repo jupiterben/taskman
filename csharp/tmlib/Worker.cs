@@ -17,8 +17,8 @@ namespace AniTask
         {
             base.Start();
             this.taskConsumer = new WorkConsumer(Config.MQ_SERVER, Config.TASK_QUEUE);
-            this.taskConsumer.Run(OnTaskMessage);
             this.resultSender = new BroadcastSender(Config.MQ_SERVER, Config.TASK_RESULT_QUEUE);
+            this.taskConsumer.Run(OnTaskMessage);
         }
 
         public override void Stop()
