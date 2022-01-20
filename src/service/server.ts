@@ -35,7 +35,7 @@ app.use(express.static('dist'));
 app.use(cors());
 
 app.get('/api/jobs', async function (req, res) {
-  const status: API.NodeList = { data: jobService.getNodeStatus() };
+  const status: API.JobList = { data: jobService.getJobList() };
   res.json(status);
 });
 

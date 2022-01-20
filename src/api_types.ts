@@ -34,38 +34,49 @@ export declare namespace API {
 
   type TaskMeta = {
     uuid: string;
-    name: string;
-    args: any[];
+    jobId: string;
+    userData: string;
     createdAt: number;
     desc?: string;
-    customData?: string;
-  };
-  type TaskResult = {
-    meta: TaskMeta;
-    state: TaskStateEnum;
-    finishState?: TaskFinishState;
-    desc?: string;
-    startTime: number;
-    endTime: number;      //or estimate end time
-    progress?: number;
   };
 
-  type GenAnimFileMetaData = {
-    animFileName: string;
-    submitter: string;
+  type TaskStateDataMsg = {
+    state: TaskStateEnum;
+    finishState: TaskFinishState;
+    curProgress: number;
+    totalProgress: number;
+    desc: string;
   };
+
+  type TaskStatusMsg = {
+    meta: TaskMeta;
+    stateData: TaskStateDataMsg;
+    startTime: number;
+    endTime: number;
+  }
 
   type JobStatus = {
     name: string;
     desc: string;
-    updateAt: number;
-    lastRunTime: number;
-    tasks: TaskResult[];
+    tasks: TaskStatusMsg[];
   };
 
   type JobList = {
     data: JobStatus[];
   };
+
+  type P4User = 
+  {
+    Id:string;
+    FullName:string;
+    EmailAddress:string;
+  }
+
+  type GenFileUserData = {
+    maxFile: string;
+    submitter: any;
+    changeList: number;
+  }
 
   type NodeStatus = {
     nodeId: string;

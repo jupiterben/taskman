@@ -1,9 +1,9 @@
 export default [
   { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
   {
-    name: '任务状态', icon: 'table', path: '/jobs',
+    name: '任务状态', icon: 'table',
     routes: [
-      { name: '动画文件生成', icon: 'table', path: '/jobs/animgen', component: './jobs/animgen' },
+      { name: '动画文件生成', icon: 'table', path: '/jobs', component: './jobs' },
     ]
   },
   { name: '工作节点状态', icon: 'DeploymentUnitOutlined', path: '/workers', component: './workers' },

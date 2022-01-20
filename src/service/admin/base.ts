@@ -14,6 +14,7 @@ export abstract class NodeManager {
     private nodeStatus: Map<string, API.NodeStatus> = new Map<string, API.NodeStatus>();
     readonly nodeType: string;
     protected heartBeatListener?: BroadCastReceiver;
+    protected nodeMsgListener?: BroadCastReceiver;
     protected rpcClient?: RPCClient;
 
     constructor(nodeType: string) {
@@ -23,6 +24,8 @@ export abstract class NodeManager {
     start(url: string) {
         this.heartBeatListener = new BroadCastReceiver(url, Config.NODE_HEARTBEAT_CHANNEL);
         this.heartBeatListener.run(this.onNodeHeartBeat.bind(this));
+        this.nodeMsgListener = new BroadCastReceiver(url, Config.NODE_MESSAGE_CHANNEL);
+        this.nodeMsgListener.run(this.onNodeRawMessage.bind(this));
         this.rpcClient = new RPCClient(url);
     }
     async stop() {
@@ -66,6 +69,15 @@ export abstract class NodeManager {
         } else {
             this.nodeStatus.set(status.nodeId, status);
         }
+    }
+
+    private onNodeRawMessage(msg: string): void {
+        const obj: Record<string, unknown> = JSON.parse(msg);
+        this.onNodeMessage(obj.nodeId as string, obj.type as string, obj.content);
+    }
+
+    onNodeMessage(nodeId: string, type: string, content: any): void {
+        console.log(`[${this.nodeType}] ${nodeId} ${type} ${content}`);
     }
 
     getNodeStatus(): API.NodeStatus[] {

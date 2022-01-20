@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { API } from '@/api_types';
 import { useInterval } from 'ahooks';
-import { GetJob } from '@/api';
+import { GetJobs } from '@/api';
 import JobStatus from './jobstatus';
 
 export const JobList: React.FC = () => {
@@ -10,7 +10,7 @@ export const JobList: React.FC = () => {
 
   const updateData = async () => {
     try {
-      const result = await GetJob();
+      const result = await GetJobs();
       if (result) setJobList(result);
     } catch (e) {
       console.log(e);

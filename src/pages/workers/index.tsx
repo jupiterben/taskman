@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { GetWorker } from '@/api';
+import { GetWorkers } from '@/api';
 import { useInterval } from 'ahooks';
 import { Card, List } from 'antd';
 // import classNames from 'classnames';
@@ -63,7 +63,7 @@ const WorkerListView = () => {
 
   const updateData = async () => {
     try {
-      const result = await GetWorker();
+      const result = await GetWorkers();
       if (result) setWorkerList(result);
     } catch (e) {
       console.log(e);
