@@ -1,7 +1,6 @@
 import { Form, message } from 'antd';
 import ProForm, { ProFormText, ProFormSelect, ProFormDependency } from '@ant-design/pro-form';
 
-
 export default () => {
     return (
         <ProForm
@@ -43,7 +42,9 @@ export default () => {
                             ]}
                             width="md"
                             name="useMode"
-                            label={`与《${name || ''}》 与 《${name2?.text || ''}》合同约定生效方式`}
+                            label={`与《${name || ''}》 与 《${
+                                name2?.text || ''
+                            }》合同约定生效方式`}
                         />
                     );
                 }}

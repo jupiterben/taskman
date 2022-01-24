@@ -6,31 +6,31 @@ import { GetJobs } from '@/api';
 import JobStatus from './jobstatus';
 
 export const JobList: React.FC = () => {
-  const [jobList, setJobList] = useState<API.JobList>({ data: [] });
+    const [jobList, setJobList] = useState<API.JobList>({ data: [] });
 
-  const updateData = async () => {
-    try {
-      const result = await GetJobs();
-      if (result) setJobList(result);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    const updateData = async () => {
+        try {
+            const result = await GetJobs();
+            if (result) setJobList(result);
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
-  useEffect(() => {
-    updateData();
-  }, []);
-  useInterval(() => {
-    updateData();
-  }, 1000);
+    useEffect(() => {
+        updateData();
+    }, []);
+    useInterval(() => {
+        updateData();
+    }, 1000);
 
-  return (
-    <PageContainer>
-      {jobList.data.map((job) => (
-        <JobStatus key={job.name} data={job} />
-      ))}
-    </PageContainer>
-  );
+    return (
+        <PageContainer>
+            {jobList.data.map((job) => (
+                <JobStatus key={job.name} data={job} />
+            ))}
+        </PageContainer>
+    );
 };
 
 export default JobList;

@@ -3,12 +3,12 @@ import type * as amqplib from 'amqplib';
 import { v4 } from 'uuid';
 
 export async function EchoHandler(msg: string) {
-    return "Echo:" + msg;
+    return 'Echo:' + msg;
 }
 
 class RPCBase extends MQBase {
     async assertServerQueue(queueName: string) {
-        return await this.assertQueue(queueName, { durable: false })
+        return await this.assertQueue(queueName, { durable: false });
     }
 
     async assertClientQueue() {
@@ -17,7 +17,7 @@ class RPCBase extends MQBase {
 }
 
 export class RPCServer extends RPCBase {
-    queue: Promise<{ ch: amqplib.Channel, queue: string }>;
+    queue: Promise<{ ch: amqplib.Channel; queue: string }>;
     handler: (msg: string) => Promise<string>;
     constructor(url: string, handler = EchoHandler) {
         super(url);
@@ -40,7 +40,7 @@ export class RPCServer extends RPCBase {
 }
 
 export class RPCClient extends RPCBase {
-    resultQueue: Promise<{ ch: amqplib.Channel, queue: string }>;
+    resultQueue: Promise<{ ch: amqplib.Channel; queue: string }>;
     resolveMap = new Map<string, (result: string) => void>();
     constructor(url: string) {
         super(url);
@@ -60,9 +60,11 @@ export class RPCClient extends RPCBase {
 
     private getResult(correlateId: string, timeout?: number) {
         return new Promise<string>((resolve, reject) => {
-            const timeoutId = timeout ? setTimeout(() => {
-                reject(new Error('timeout'));
-            }, timeout) : undefined;
+            const timeoutId = timeout
+                ? setTimeout(() => {
+                      reject(new Error('timeout'));
+                  }, timeout)
+                : undefined;
             this.resolveMap.set(correlateId, (msg: string) => {
                 resolve(msg);
                 if (timeoutId) clearTimeout(timeoutId);

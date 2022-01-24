@@ -1,8 +1,7 @@
-
 import * as amqplib from 'amqplib';
 
 export class MQBase {
-    channel: Promise<{ conn: amqplib.Connection, ch: amqplib.Channel }>;
+    channel: Promise<{ conn: amqplib.Connection; ch: amqplib.Channel }>;
     constructor(url: string, opts: any = {}) {
         this.channel = this.open(url, opts);
     }
@@ -29,4 +28,3 @@ export class MQBase {
         await conn.close();
     }
 }
-

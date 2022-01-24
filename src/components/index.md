@@ -36,19 +36,19 @@ import React from 'react';
 import HeaderDropdown from '@/components/HeaderDropdown';
 
 export default () => {
-  const menuHeaderDropdown = (
-    <Menu selectedKeys={[]}>
-      <Menu.Item key="center">个人中心</Menu.Item>
-      <Menu.Item key="settings">个人设置</Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="logout">退出登录</Menu.Item>
-    </Menu>
-  );
-  return (
-    <HeaderDropdown overlay={menuHeaderDropdown}>
-      <Button>hover 展示菜单</Button>
-    </HeaderDropdown>
-  );
+    const menuHeaderDropdown = (
+        <Menu selectedKeys={[]}>
+            <Menu.Item key="center">个人中心</Menu.Item>
+            <Menu.Item key="settings">个人设置</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="logout">退出登录</Menu.Item>
+        </Menu>
+    );
+    return (
+        <HeaderDropdown overlay={menuHeaderDropdown}>
+            <Button>hover 展示菜单</Button>
+        </HeaderDropdown>
+    );
 };
 ```
 
@@ -65,30 +65,30 @@ import React from 'react';
 import HeaderSearch from '@/components/HeaderSearch';
 
 export default () => {
-  return (
-    <HeaderSearch
-      placeholder="站内搜索"
-      defaultValue="umi ui"
-      options={[
-        { label: 'Ant Design Pro', value: 'Ant Design Pro' },
-        {
-          label: 'Ant Design',
-          value: 'Ant Design',
-        },
-        {
-          label: 'Pro Table',
-          value: 'Pro Table',
-        },
-        {
-          label: 'Pro Layout',
-          value: 'Pro Layout',
-        },
-      ]}
-      onSearch={(value) => {
-        console.log('input', value);
-      }}
-    />
-  );
+    return (
+        <HeaderSearch
+            placeholder="站内搜索"
+            defaultValue="umi ui"
+            options={[
+                { label: 'Ant Design Pro', value: 'Ant Design Pro' },
+                {
+                    label: 'Ant Design',
+                    value: 'Ant Design',
+                },
+                {
+                    label: 'Pro Table',
+                    value: 'Pro Table',
+                },
+                {
+                    label: 'Pro Layout',
+                    value: 'Pro Layout',
+                },
+            ]}
+            onSearch={(value) => {
+                console.log('input', value);
+            }}
+        />
+    );
 };
 ```
 
@@ -117,61 +117,61 @@ import React from 'react';
 // import NoticeIcon from '@/components/NoticeIcon/NoticeIcon';
 
 export default () => {
-  const list = [
-    {
-      id: '000000001',
-      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
-      title: '你收到了 14 份新周报',
-      datetime: '2017-08-09',
-      type: 'notification',
-    },
-    {
-      id: '000000002',
-      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/OKJXDXrmkNshAMvwtvhu.png',
-      title: '你推荐的 曲妮妮 已通过第三轮面试',
-      datetime: '2017-08-08',
-      type: 'notification',
-    },
-  ];
-  return (
-    <NoticeIcon
-      count={10}
-      onItemClick={(item) => {
-        message.info(`${item.title} 被点击了`);
-      }}
-      onClear={(title: string, key: string) => message.info('点击了清空更多')}
-      loading={false}
-      clearText="清空"
-      viewMoreText="查看更多"
-      onViewMore={() => message.info('点击了查看更多')}
-      clearClose
-    >
-      <NoticeIcon.Tab
-        tabKey="notification"
-        count={2}
-        list={list}
-        title="通知"
-        emptyText="你已查看所有通知"
-        showViewMore
-      />
-      <NoticeIcon.Tab
-        tabKey="message"
-        count={2}
-        list={list}
-        title="消息"
-        emptyText="您已读完所有消息"
-        showViewMore
-      />
-      <NoticeIcon.Tab
-        tabKey="event"
-        title="待办"
-        emptyText="你已完成所有待办"
-        count={2}
-        list={list}
-        showViewMore
-      />
-    </NoticeIcon>
-  );
+    const list = [
+        {
+            id: '000000001',
+            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
+            title: '你收到了 14 份新周报',
+            datetime: '2017-08-09',
+            type: 'notification',
+        },
+        {
+            id: '000000002',
+            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/OKJXDXrmkNshAMvwtvhu.png',
+            title: '你推荐的 曲妮妮 已通过第三轮面试',
+            datetime: '2017-08-08',
+            type: 'notification',
+        },
+    ];
+    return (
+        <NoticeIcon
+            count={10}
+            onItemClick={(item) => {
+                message.info(`${item.title} 被点击了`);
+            }}
+            onClear={(title: string, key: string) => message.info('点击了清空更多')}
+            loading={false}
+            clearText="清空"
+            viewMoreText="查看更多"
+            onViewMore={() => message.info('点击了查看更多')}
+            clearClose
+        >
+            <NoticeIcon.Tab
+                tabKey="notification"
+                count={2}
+                list={list}
+                title="通知"
+                emptyText="你已查看所有通知"
+                showViewMore
+            />
+            <NoticeIcon.Tab
+                tabKey="message"
+                count={2}
+                list={list}
+                title="消息"
+                emptyText="您已读完所有消息"
+                showViewMore
+            />
+            <NoticeIcon.Tab
+                tabKey="event"
+                title="待办"
+                emptyText="你已完成所有待办"
+                count={2}
+                list={list}
+                showViewMore
+            />
+        </NoticeIcon>
+    );
 };
 ```
 
@@ -212,17 +212,17 @@ export default () => {
 
 ```tsx | pure
 export interface NoticeIconData {
-  id: string;
-  key: string;
-  avatar: string;
-  title: string;
-  datetime: string;
-  type: string;
-  read?: boolean;
-  description: string;
-  clickClose?: boolean;
-  extra: any;
-  status: string;
+    id: string;
+    key: string;
+    avatar: string;
+    title: string;
+    datetime: string;
+    type: string;
+    read?: boolean;
+    description: string;
+    clickClose?: boolean;
+    extra: any;
+    status: string;
 }
 ```
 
@@ -232,41 +232,41 @@ RightContent 是以上几个组件的组合，同时新增了 plugins 的 `Selec
 
 ```tsx | pure
 <Space>
-  <HeaderSearch
-    placeholder="站内搜索"
-    defaultValue="umi ui"
-    options={[
-      { label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>, value: 'umi ui' },
-      {
-        label: <a href="next.ant.design">Ant Design</a>,
-        value: 'Ant Design',
-      },
-      {
-        label: <a href="https://protable.ant.design/">Pro Table</a>,
-        value: 'Pro Table',
-      },
-      {
-        label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
-        value: 'Pro Layout',
-      },
-    ]}
-  />
-  <Tooltip title="使用文档">
-    <span
-      className={styles.action}
-      onClick={() => {
-        window.location.href = 'https://pro.ant.design/docs/getting-started';
-      }}
-    >
-      <QuestionCircleOutlined />
-    </span>
-  </Tooltip>
-  <Avatar />
-  {REACT_APP_ENV && (
-    <span>
-      <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
-    </span>
-  )}
-  <SelectLang className={styles.action} />
+    <HeaderSearch
+        placeholder="站内搜索"
+        defaultValue="umi ui"
+        options={[
+            { label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>, value: 'umi ui' },
+            {
+                label: <a href="next.ant.design">Ant Design</a>,
+                value: 'Ant Design',
+            },
+            {
+                label: <a href="https://protable.ant.design/">Pro Table</a>,
+                value: 'Pro Table',
+            },
+            {
+                label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
+                value: 'Pro Layout',
+            },
+        ]}
+    />
+    <Tooltip title="使用文档">
+        <span
+            className={styles.action}
+            onClick={() => {
+                window.location.href = 'https://pro.ant.design/docs/getting-started';
+            }}
+        >
+            <QuestionCircleOutlined />
+        </span>
+    </Tooltip>
+    <Avatar />
+    {REACT_APP_ENV && (
+        <span>
+            <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
+        </span>
+    )}
+    <SelectLang className={styles.action} />
 </Space>
 ```

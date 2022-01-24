@@ -8,7 +8,7 @@ export type AdminMessage = {
     messageId: string;
     command: string;
     resultQueue: string;
-}
+};
 
 export abstract class NodeManager {
     private nodeStatus: Map<string, API.NodeStatus> = new Map<string, API.NodeStatus>();
@@ -38,7 +38,7 @@ export abstract class NodeManager {
     isOnline(itemId: string): boolean {
         if (this.nodeStatus.has(itemId)) {
             const status = this.nodeStatus.get(itemId);
-            if (status && (Date.now() - status.updateAt) < Config.NODE_OFFLINE_TIMEOUT) {
+            if (status && Date.now() - status.updateAt < Config.NODE_OFFLINE_TIMEOUT) {
                 return true;
             }
         }
